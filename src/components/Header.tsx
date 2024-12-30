@@ -1,5 +1,5 @@
 import React from "react";
-import LanguageSwitcher from "./LanguageSwitcher";
+import {  Globe } from 'lucide-react';
 
 const Header: React.FC = () => {
   return (
@@ -11,9 +11,11 @@ const Header: React.FC = () => {
         </div>
         <div className="flex items-center space-x-6">
           <span>Données</span>
-          <button className="text-orange-500">Se connecter</button>
+          <button className="text-black-500">Se connecter</button>
           <div className="flex items-center space-x-2">
-            <LanguageSwitcher/>
+          
+          <Globe className="w-5 h-5 text-orange-300" />
+          <span className="text-orange-300">Français</span>
           </div>
         </div>
       </div>
@@ -58,7 +60,7 @@ const Header: React.FC = () => {
               </li>
             </ul>
           </div>
-          <button className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600">
+          <button className="bg-orange-300 h-[35px] text-white bold py-1 px-4 rounded hover:bg-orange-500 text-sm">
             Rejoignez-nous
           </button>
         </div>

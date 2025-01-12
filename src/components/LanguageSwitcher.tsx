@@ -4,7 +4,7 @@ const LanguageSwitcher: React.FC = () => {
   const [language, setLanguage] = useState("Français");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const languages = ["Français", "English", "Español", "Deutsch"];
+  const languages = ["Français", "English"];
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);

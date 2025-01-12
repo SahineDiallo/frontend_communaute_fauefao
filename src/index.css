@@ -5,8 +5,45 @@
 @tailwind components;
 @tailwind utilities;
 
+<<<<<<< HEAD
 @layer base {
   html {
     font-family: 'Poppins', sans-serif;
   }
 }
+=======
+@font-face {
+    font-family: 'AthleticsBold';
+    src: url('../assets/fonts/athleticsbold.woff2') format('woff2'),
+         url('./assets/fonts/athleticsbold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+@layer components {
+
+}
+
+@layer utilities {
+    .flex-center {
+        @apply flex items-center;
+    }
+    
+    .flex-between {
+        @apply flex-center justify-between;
+    }
+    .btn {
+        @apply px-4 py-2 bg-[#F48023] text-white hover:bg-[#F48023/3] duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400;
+    }
+      
+    .btn-primary {
+    @apply px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500;
+    }
+    .h1 {
+        @apply text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold;
+        font-family: 'AthleticsBold', sans-serif;
+    }
+    
+    
+}
+>>>>>>> 0fce795 (modularize the components,auth pages, redux setups globally)

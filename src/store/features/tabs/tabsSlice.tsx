@@ -5,7 +5,7 @@ interface TabsState {
 }
 
 const initialState: TabsState = {
-  activeTab: 'about',
+  activeTab: 'À Propos',
 };
 
 const tabsSlice = createSlice({

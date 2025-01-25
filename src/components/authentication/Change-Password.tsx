@@ -48,7 +48,7 @@ export default function ChangePasswordPage() {
           type={showPassword ? 'text' : 'password'}
           value={formData.newPassword}
           onChange={handleChange}
-          placeholder="Nouveau mot de passe"
+          label="Nouveau mot de passe"
           required
           showPassword={showPassword}
           togglePassword={() => setShowPassword(!showPassword)}
@@ -60,7 +60,7 @@ export default function ChangePasswordPage() {
           type={showPassword ? 'text' : 'password'}
           value={formData.reNewPassword}
           onChange={handleChange}
-          placeholder="Confirmer le nouveau mot de passe"
+          label="Confirmer le nouveau mot de passe"
           required
           showPassword={showPassword}
           togglePassword={() => setShowPassword(!showPassword)}

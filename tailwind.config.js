@@ -6,8 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Poppins', ...defaultTheme.fontFamily.sans],
-        'custom': ['Poppins', 'sans-serif'],
+        'sans': ['Inter', ...defaultTheme.fontFamily.sans],
+        'custom': ['Inter', 'sans-serif'],
       },
     },
   },

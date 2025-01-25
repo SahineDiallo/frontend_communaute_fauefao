@@ -1,14 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Menu } from "../utils/Menus"
 import { MenuItem } from '../utils/Menus';
 import LanguageSwitcher from "./LanguageSwitcher";
 import  Logo  from "../assets/logo-fauefao.png"
-import { ChevronDown, User } from 'lucide-react';
+// import { ChevronDown, User } from 'lucide-react';
 import MobileMenu  from "../components/menu/mobile"
+import useAuth from '../hooks/useAuth';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { ChevronDown, LogOut, User } from 'lucide-react';
 
 
 const MainHeader:React.FC = () => {
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth); // Get auth state from Redux
+  const { logout } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <header>
       <div className='bg-[#FDF2E9] hidden lg:block'>
@@ -47,16 +57,60 @@ const MainHeader:React.FC = () => {
           ))}
         </ul>
         <div className='flex-center'>
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <LanguageSwitcher/>
-          </div>
-          <Link to="/login">
-            <button className="btn flex-center sm:items-end gap-2 sm:gap-0 sm:px-2">
-              <User />
-              <span className='hidden lg:block'>Login</span> 
-              <ChevronDown className='' />
-            </button>
-          </Link>
+          </div> */}
+          {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center space-x-2 focus:outline-none"
+                >
+                  <img
+                    src={user?.profile?.image_url || 'https://via.placeholder.com/40'} // Fallback image
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <span>{user?.full_name}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4" />
+                        <span>Profil</span>
+                      </div>
+                    </Link>
+                    {/* <Link
+                      to="/settings"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Settings className="w-4 h-4" />
+                        <span>Paramètres</span>
+                      </div>
+                    </Link> */}
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <LogOut className="w-4 h-4" />
+                        <span>Déconnexion</span>
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login" className="text-orange-500">
+                Se connecter
+              </Link>
+            )}
         </div>
       </nav>
     </header>

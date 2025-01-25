@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import { AuthLayout } from '../AuthLayout'
 import { InputWithIcon } from '../ui/InputWithIcon'
-
+import authImage from '../../assets/auth_image.jpg';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout
-      imageSrc="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-11%20at%2016.40.59-LeWy743UdmkZ3dvYuVLoWiO3Kpjh8b.png"
+      imageSrc={authImage}
       imageAlt="Person working on laptop"
     >
       <div className="text-center">
@@ -36,12 +36,12 @@ export default function ForgotPasswordPage() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Adresse email"
+          label='Email'
           required
         />
         <button
           type="submit"
-          className="w-full bg-[#EF8450] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#EF8450]/90 focus:outline-none focus:ring-2 focus:ring-[#EF8450] focus:ring-offset-2"
+          className="w-full bg-[#EF8450] px-4 py-4 text-sm font-semibold text-white shadow-sm hover:bg-[#EF8450]/90 focus:outline-none focus:ring-2 focus:ring-[#EF8450] focus:ring-offset-2"
         >
           Envoyer le lien de réinitialisation
         </button>

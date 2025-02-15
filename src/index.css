@@ -63,12 +63,6 @@
         margin-bottom: 0.75rem; /* Less spacing for h4 */
         color: #555; /* Lightest color for subtlety */
       }
-      
-      /* Optional: Add a bottom border for h1 and h2 */
-      h1, h2 {
-        border-bottom: 2px solid #e86928; /* Accent color for emphasis */
-        padding-bottom: 0.5rem; /* Spacing between text and border */
-      }
 
       .discussion_inst img, .discussion_inst iframe {
         width: 100%; /* Make them responsive */

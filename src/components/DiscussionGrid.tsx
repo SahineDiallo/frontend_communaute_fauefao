@@ -38,7 +38,7 @@ interface DiscussionPostProps {
 
   
   // Helper function to truncate HTML content to 4 lines
-  const truncateExcerpt = (html: string, maxLength: number = 200) => {
+  const truncateExcerpt = (html: string, maxLength: number = 300) => {
     // Create a temporary element to parse the HTML
     const div = document.createElement('div');
     div.innerHTML = html;
@@ -138,7 +138,7 @@ interface DiscussionPostProps {
           />
   
           {/* Read more button */}
-          <Button onClick={handleReadMoreClick} asChild className="hover:bg-[#d25a1f] bg-transparent hover:text-white border rounded-none text-white">
+          <Button onClick={handleReadMoreClick} asChild className="hover:bg-[#d25a1f] bg-primary hover:text-white border rounded-none text-white">
             <Link to={`/communities/${communityPkId}/posts/${pkId}`}>Lire plus</Link>
           </Button>
         </div>

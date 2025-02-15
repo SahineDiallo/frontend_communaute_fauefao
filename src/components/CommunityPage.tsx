@@ -78,7 +78,7 @@ const CommunitiesPage: React.FC = () => {
       setSearchParams(params);
 
       // If any filter is active, fetch filtered communities; else, reset.
-        dispatch(fetchFilteredCommunities(filters));
+      dispatch(fetchFilteredCommunities(filters));
 
     },
     [dispatch, setSearchParams]

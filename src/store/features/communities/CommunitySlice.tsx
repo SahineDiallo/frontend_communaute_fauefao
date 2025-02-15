@@ -55,7 +55,7 @@ export const fetchFilteredCommunities = createAsyncThunk<Community[], FilterPara
     const domain = import.meta.env.VITE_MAIN_DOMAIN;
     const queryParams = new URLSearchParams();
     
-    if (filters.query) queryParams.append('search', filters.query);
+    if (filters.query) queryParams.append('community_name', filters.query);
     if (filters.type && filters.type !== 'all') queryParams.append('type', filters.type);
     if (filters.category && filters.category !== 'all') queryParams.append('category', filters.category);
     

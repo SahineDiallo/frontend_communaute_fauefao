@@ -150,7 +150,6 @@ const MenuPageDetail: React.FC<MenuPageDetailProps> = ({ MenuItems, communityPkI
   const joinCommunity = async (pkId: string) => {
     const token = localStorage.getItem("token")
     const domain = import.meta.env.VITE_MAIN_DOMAIN;
-    console.log("here is the token", token)
     try {
       const response = await fetch(`${domain}/api/join-community/`, {
         method: 'POST',

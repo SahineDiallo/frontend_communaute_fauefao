@@ -9,6 +9,7 @@ import {
 import { Input } from "./ui/input"
 import { Category } from '../types'
 import { useState } from 'react'
+import { Button } from './ui/Button'
 
 
 
@@ -71,10 +72,8 @@ export function ReusableFilter({ categories, initialFilters, onFilterChange }: R
   const [newsType, setNewsType] = useState(initialFilters?.type || 'all');
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || 'all');
 
-  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    onFilterChange({ query: value, type: newsType, category: selectedCategory });
+  const handleQueryChange = () => {
+    onFilterChange({ query: searchQuery, type: newsType, category: selectedCategory });
   };
 
   const handleTypeChange = (value: string) => {
@@ -92,12 +91,16 @@ export function ReusableFilter({ categories, initialFilters, onFilterChange }: R
       <div className="relative flex-1">
         <Input
           type="text"
-          placeholder="Search News"
-          className="pl-10"
+          placeholder="Search ...."
+          className="pl-4"
           value={searchQuery}
-          onChange={handleQueryChange}
+          onChange={(e) => setSearchQuery(e.target.value)} 
         />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="absolute right-10 top-[15px] -translate-y-1/2 h-4 w-4 text-muted-foreground mr-2">
+          <Button className='bg-primary text-white px-4 py-2' onClick={handleQueryChange}>
+            <Search />
+          </Button>
+        </div>
       </div>
       <Select value={newsType} onValueChange={handleTypeChange}>
         <SelectTrigger className="w-full md:w-[200px]">
@@ -105,8 +108,6 @@ export function ReusableFilter({ categories, initialFilters, onFilterChange }: R
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Types</SelectItem>
-          <SelectItem value="news">News</SelectItem>
-          <SelectItem value="articles">Articles</SelectItem>
         </SelectContent>
       </Select>
       <Select value={selectedCategory} onValueChange={handleCategoryChange}>

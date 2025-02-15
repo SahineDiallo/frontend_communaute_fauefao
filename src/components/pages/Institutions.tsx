@@ -3,10 +3,13 @@ import { PlusCircle, LayoutGrid, List } from "lucide-react"
 import { useState } from "react"
 import { Button } from "../ui/Button"
 import { StakeholderCard } from "../InstitutionCard"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/SelectButton"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, CountrySelect } from "../ui/SelectButton"
 import { HeroSection } from "../home/Hero-section"
 import { Input } from "../ui/input"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/Accordion"
+import countryList from "react-select-country-list"
+
+
 
 const MOCK_STAKEHOLDERS = [
   {
@@ -21,7 +24,6 @@ const MOCK_STAKEHOLDERS = [
 
 export default function StakeholderSearch() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-
   return (
     <>
         <HeroSection title="Institutions de nos Communautés" />
@@ -47,41 +49,63 @@ export default function StakeholderSearch() {
 
                     <div className="border-t border-[#ef8450] pt-6">
                         <h3 className="text-xl font-semibold mb-4">Filtres</h3>
-                        <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="social-protection">
+                        <Accordion type="multiple" className="w-full">
+                            {/* Countries Filter */}
+                            <AccordionItem value="countries">
                             <AccordionTrigger className="text-[#ef8450]">
-                            Programmes de protection sociale
+                                Pays
                             </AccordionTrigger>
-                            <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="topics">
-                            <AccordionTrigger className="text-[#ef8450]">
-                            Thèmes de protection sociale
-                            </AccordionTrigger>
-                            <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="crosscutting">
-                            <AccordionTrigger className="text-[#ef8450]">
-                            Domaines transversaux
-                            </AccordionTrigger>
-                            <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="position">
-                            <AccordionTrigger className="text-[#ef8450]">
-                            Poste professionnel
-                            </AccordionTrigger>
-                            <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="regions">
-                            <AccordionTrigger className="text-[#ef8450]">
-                            Régions d'intérêt
-                            </AccordionTrigger>
-                            <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                        </AccordionItem>
+                            <AccordionContent>
+                                {/* Dropdown for Countries */}
+                                <CountrySelect />
+                            </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="types">
+                                <AccordionTrigger className="text-[#ef8450]">
+                                    Types
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    {/* Checkbox List */}
+                                    <div className="space-y-2">
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Secteur public</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Gouvernement</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Secteur Privé</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Centre de recherche et Université</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Indépendant</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Société Civile</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Organisation régionale et internationale</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Média</span>
+                                    </label>
+                                    <label className="flex items-center space-x-2">
+                                        <input type="checkbox" className="form-checkbox text-[#ef8450]" />
+                                        <span>Autres</span>
+                                    </label>
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
                         </Accordion>
                     </div>
                     </div>
@@ -97,55 +121,55 @@ export default function StakeholderSearch() {
                 </div>
 
                 <div className="flex flex-wrap gap-4 items-center justify-between">
-                    <Button className="text-primary-foreground" variant="outline">
+                    {/* <Button className="text-primary-foreground" variant="outline">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Ajouter Institution
-                    </Button>
+                    </Button> */}
 
                     <div className="flex gap-4 items-center">
-                    <div className="flex gap-2 border rounded-md p-1">
-                        <Button
-                        variant={viewMode === "grid" ? "secondary" : "ghost"}
-                        size="icon"
-                        onClick={() => setViewMode("grid")}
-                        >
-                        <LayoutGrid className="h-4 w-4" />
-                        </Button>
-                        <Button
-                        variant={viewMode === "list" ? "secondary" : "ghost"}
-                        size="icon"
-                        onClick={() => setViewMode("list")}
-                        >
-                        <List className="h-4 w-4" />
-                        </Button>
-                    </div>
+                        <div className="flex gap-2 border rounded-md p-1">
+                            <Button
+                            variant={viewMode === "grid" ? "secondary" : "ghost"}
+                            size="icon"
+                            onClick={() => setViewMode("grid")}
+                            >
+                            <LayoutGrid className="h-4 w-4" />
+                            </Button>
+                            <Button
+                            variant={viewMode === "list" ? "secondary" : "ghost"}
+                            size="icon"
+                            onClick={() => setViewMode("list")}
+                            >
+                            <List className="h-4 w-4" />
+                            </Button>
+                        </div>
 
-                    <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">Trier par</span>
-                        <Select defaultValue="recent">
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="recent">plus récent</SelectItem>
-                            <SelectItem value="old">plus ancien</SelectItem>
-                        </SelectContent>
-                        </Select>
-                    </div>
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm text-muted-foreground">Trier par</span>
+                            <Select defaultValue="recent">
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="recent">plus récent</SelectItem>
+                                <SelectItem value="old">plus ancien</SelectItem>
+                            </SelectContent>
+                            </Select>
+                        </div>
 
-                    <div className="flex items-center gap-4">
-                        <span className="text-sm text-muted-foreground">Éléments par page</span>
-                        <Select defaultValue="10">
-                        <SelectTrigger className="w-[80px]">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="10">10</SelectItem>
-                            <SelectItem value="20">20</SelectItem>
-                            <SelectItem value="50">50</SelectItem>
-                        </SelectContent>
-                        </Select>
-                    </div>
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm text-muted-foreground">Éléments par page</span>
+                            <Select defaultValue="10">
+                            <SelectTrigger className="w-[80px]">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="20">20</SelectItem>
+                                <SelectItem value="50">50</SelectItem>
+                            </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 </div>
 

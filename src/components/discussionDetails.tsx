@@ -8,6 +8,7 @@ import { ActivityItem } from './ActivityItem';
 import { DetailPageMenuItems } from '../utils/Menus';
 import MenuPageDetail from './MenuPageDetail';
 import FichiersList from './FichierList';
+import { useNavigate } from "react-router-dom";
 
 // Define the type for the post data
 interface Post {
@@ -19,34 +20,40 @@ interface Post {
   // Add other fields as needed
 }
 
+const fetchPostDetails = async (
+  postId: string,
+  pkId: string,
+  navigate: (path: string) => void
+): Promise<Post | undefined> => {
+  const token = localStorage.getItem("token");
+  const domain = import.meta.env.VITE_MAIN_DOMAIN;
 
-// Mock API function (replace with your actual API call)
-const fetchPostDetails = async (postId: string, pkId: string): Promise<Post> => {
-    // Retrieve the token from local storage
-    const token = localStorage.getItem('token');
-    const domain = import.meta.env.VITE_MAIN_DOMAIN;
-  
-    if (!token) {
-      window.location.href = "/login";
-    } else {
-    // Make the request with the token in the Authorization header
+  if (!token) {
+    navigate("/login"); // Redirect using React Router
+    return;
+  }
+
+  try {
     const response = await fetch(`${domain}/api/discussions/${postId}/?communaute_id=${pkId}`, {
       headers: {
-        'Authorization': `Bearer ${token}`, // Include the token in the header
-        'Content-Type': 'application/json', // Optional: Add other headers if needed
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
-  
-  
+
     if (!response.ok) {
-      console.log('Response not OK:', response.status, response.statusText);
-      throw new Error('Failed to fetch post details');
+      console.log("Response not OK:", response.status, response.statusText);
+      throw new Error("Failed to fetch post details");
     }
-  
+
     const data = await response.json();
     return data;
+  } catch (error) {
+    console.error("Error fetching post details:", error);
+    return undefined;
   }
 };
+
 
 const PostDetails = () => {
   // Use useParams with explicit types
@@ -60,11 +67,12 @@ const PostDetails = () => {
   const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [recentActivities, setRecentActivities] = useState([]);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   
   useEffect(() => {
-    if (!token) window.location.href = "/login";
-    fetch(`${domain}api/recent-activities/?community_id=${community?.pkId}`)
+    // if (!token) window.location.href = "/login";
+    fetch(`${domain}/api/recent-activities/?community_id=${community?.pkId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("here is the data recent activities", data);
@@ -81,11 +89,14 @@ const PostDetails = () => {
           }
     
           try {
-            const data = await fetchPostDetails(postId, pkId);
-            console.log("here is the data returned for discussion", data);
-            setPost(data.discussion);
-            if (data.fichiers) {
-              setDiscussionFichiers(data.fichiers)
+            const data = await fetchPostDetails(postId, pkId, navigate);
+            if (data) {
+              
+              console.log("here is the data returned for discussion", data);
+              if (data.discussion) setPost(data.discussion);
+              if (data.fichiers) {
+                setDiscussionFichiers(data.fichiers)
+              }
             }
             
           } catch (err) {

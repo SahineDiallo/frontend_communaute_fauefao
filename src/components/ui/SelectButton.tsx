@@ -143,6 +143,32 @@ const SelectSeparator = React.forwardRef<
   />
 ))
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName
+import countryList from "react-select-country-list"
+
+export const CountrySelect = () => {
+  const [value, setValue] = React.useState("") // To track the selected country
+  const countries = countryList().getData() // Fetch the country list
+
+  const handleChange = (newValue: string) => {
+    setValue(newValue)
+  }
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      <SelectTrigger>
+        <SelectValue placeholder="Select a country" />
+      </SelectTrigger>
+      <SelectContent className="bg-white">
+        {countries.map((country) => (
+          <SelectItem key={country.value} value={country.value}>
+            {country.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
 
 export {
   Select,

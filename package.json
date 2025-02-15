@@ -18,6 +18,7 @@
     "@heroicons/react": "^2.2.0",
     "@lexical/headless": "^0.23.1",
     "@lexical/react": "^0.23.1",
+    "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-select": "^2.1.4",
     "@reduxjs/toolkit": "^2.5.0",

@@ -9,6 +9,10 @@ import CommunitiesPage from "./CommunityPage";
 import CommunityDetails from "./CommunityDetails";
 import Layout from './Layout';
 import ActivationPage from './pages/ActivationPage';
+import PostDetails from './discussionDetails';
+import CommunityTabContent from './CommunityTabContent';
+import MemberSearch from './pages/AllMembers';
+import StakeholderSearch from './pages/Institutions';
 
 const AppRoutes: React.FC  = () => {
   return (
@@ -21,7 +25,13 @@ const AppRoutes: React.FC  = () => {
       <Route path="/password-change" element={<PasswordChange />} />
       <Route element={<Layout />}>
         <Route path="/" element={<CommunitiesPage />} />
-        <Route path="/communaute-details/:pkId" element={<CommunityDetails />} />
+        <Route path="/all-members" element={<MemberSearch />} />
+        <Route path="/all-institutions" element={<StakeholderSearch />} />
+        <Route path="/communaute-details/:pkId/:tab" element={<CommunityDetails />} />
+        {/* Community Tabs */}
+        <Route path="/communities/:pkId/:tab" element={<CommunityTabContent />} />
+        {/* Post Details Page */}
+        <Route path="/communities/:pkId/posts/:postId" element={<PostDetails />} />
       </Route>
       {/* Protected Routes (With Layout) */}
       <Route element={<ProtectedRoute />}>

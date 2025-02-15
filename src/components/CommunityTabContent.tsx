@@ -1,37 +1,38 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { selectActiveTab } from '../store/features/tabs/tabsSelectors';
 import Skeleton from './skeleton/Skeleton';
-import { Community } from '../types';
 import { ActivityItem } from './ActivityItem';
 import TabContent from './tabContent';
+import { ActivityItemProps } from '../types';
 
-interface CommunityDetailContentProps {
-  community: Community;
-}
 
-const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
-  const activeTab = useAppSelector(selectActiveTab);
-  const [communityData, setCommunityData] = useState<string | null>(null);
+
+const CommunityTabContent = () => {
+  const { pkId, tab } = useParams<{ pkId: string; tab: string }>(); 
+  const [communityData, setCommunityData] = useState<string | null>(null);;
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [errorState, setErrorState] = useState<string | null>(null);
+  const [fetchingTab, setFetchingTab] = useState<string | null>(null);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [pagination, setPagination] = useState<{
     count: number;
     next: string | null;
     previous: string | null;
   } | null>(null);
-  const [fetchingTab, setFetchingTab] = useState<string | null>(null);
+  const { data: community } = useAppSelector((state) => state.communityDetails);
 
   const fetchTabData = async (tab: string, pkId: string) => {
     let url = '';
     switch (tab) {
-      case 'Membres':
+      case 'membres':
         url = `http://localhost:8000/api/community-members/${pkId}/`;
         break;
-      case 'Discussions':
+      case 'discussions':
         url = `http://localhost:8000/api/discussions/?communaute_id=${pkId}`;
         break;
-      case 'Ressources':
+      case 'ressources':
         url = `http://localhost:8000/api/fichiers/?communaute_id=${pkId}`;
         break;
       default:
@@ -43,9 +44,10 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     }
     return response.json();
   };
+
   const handleNextPage = async () => {
     if (!pagination?.next) return;
-  
+
     setLoadingState(true);
     try {
       const response = await fetch(pagination.next);
@@ -65,10 +67,10 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
       setLoadingState(false);
     }
   };
-  
+
   const handlePreviousPage = async () => {
     if (!pagination?.previous) return;
-  
+
     setLoadingState(true);
     try {
       const response = await fetch(pagination.previous);
@@ -90,17 +92,17 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
   };
 
   useEffect(() => {
+    if (!pkId || !tab) return;
+
     setLoadingState(true);
-    setCommunityData(null); // Reset communityData when the tab changes
+    setCommunityData(null);
     setErrorState(null);
-    setPagination(null); 
-    setFetchingTab(activeTab);
-    const fetchDataForTab = async (tab: string) => {
-      if (!tab || !community?.pkId) return;
-  
+    setPagination(null);
+    setFetchingTab(tab)
+    const fetchDataForTab = async () => {
       try {
-        const response = await fetchTabData(tab, community.pkId);
-        setCommunityData(response); // Store the results array
+        const response = await fetchTabData(tab, pkId);
+        setCommunityData(response);
         setPagination({
           count: response.count,
           next: response.next,
@@ -116,55 +118,58 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
         }
       } finally {
         setLoadingState(false);
-        // setFetchingTab(null);
       }
     };
-  
-    if (activeTab === 'À Propos') {
-      setLoadingState(false);
-      setCommunityData(community.description);
-    } else {
-      fetchDataForTab(activeTab);
-    }
-  }, [activeTab, community?.pkId, community.description]);
-  
-  
-  const recentActivities = [  
-    {
-      user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-      action: "added a Community document",
-      date: "25/07/2023 - 11:20",
-    },
-    {user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-    action: "added a Community document",
-    date: "25/07/2023 - 11:20",},
-    {user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-    action: "added a Community document",
-    date: "25/07/2023 - 11:20",}
 
-  ]
+    if (tab === 'a-propos') {
+      setLoadingState(false);
+      setCommunityData(community?.description || null);
+    } else {
+      fetchDataForTab();
+    }
+  }, [pkId, tab, community?.description]);
+
+  useEffect(() => {
+    fetch(`${domain}api/recent-activities/?community_id=${community?.pkId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("this is the activities for community details", data)
+        setRecentActivities(data)});
+  }, [community?.pkId, domain]);
+
+  if (!pkId || !tab) {
+    return <div>Invalid URL parameters.</div>; // Or redirect to a default page
+  }
 
   return (
-    <div className="bg-gray-100 p-4">
-      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-4">
-        {/* Left Column (col-md-4) */}
-        <div className="md:col-span-4 bg-white p-4 shadow">
-          <div className='mb-3'>
-            <h2 className="text-lg custom-header">Activités Récentes</h2>
-            {recentActivities.map((activity, i) => (
-                  <ActivityItem key={i} {...activity} />
-            ))}
-          </div>
-          <div className='mb-3'>
-          <h2 className="text-lg custom-header">Administrateurs</h2>
+    <>
+      <div className="bg-gray-100 p-4">
+        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-4">
+          {/* Left Column (col-md-4) */}
+          <div className="md:col-span-4 bg-white p-4 shadow">
+            <div className="mb-3">
+              <h2 className="text-lg custom-header">Activités Récentes</h2>
+              {recentActivities.map((activity: ActivityItemProps, i) => (
+                <ActivityItem
+                  key={i}
+                  user={activity.user}
+                  action={activity.action}
+                  timestamp={activity.timestamp}
+                  discussion={activity?.discussion}
+                  fichier={activity?.fichier}
+                  community={activity.community}
+                />
+              ))}
+            </div>
+            <div className="mb-3">
+              <h2 className="text-lg custom-header">Administrateurs</h2>
+            </div>
           </div>
 
-        </div>
-
-        {/* Right Column (col-md-8) */}
-        <div className="md:col-span-8 bg-white p-4 shadow">
-          <h2 className="text-lg font-semibold custom-header">{activeTab}</h2>
-          {fetchingTab !== activeTab ? ( // Only render if the fetching tab matches the active tab
+          {/* Right Column (col-md-8) */}
+          <div className="md:col-span-8 bg-white p-4 shadow">
+            <h2 className="text-lg font-semibold custom-header">{tab}</h2>
+            {fetchingTab !== tab ? ( // Only render if the fetching tab matches the active tab
             <Skeleton />
           ) : loadingState ? (
             <Skeleton />
@@ -172,19 +177,20 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
             <p>Error: {errorState}</p>
           ) : (
             <TabContent
-              tab={activeTab}
+              tab={tab}
               data={communityData}
               loading={loadingState}
               pagination={pagination}
               onNextPage={handleNextPage}
               onPreviousPage={handlePreviousPage}
-              communityPkId={community.pkId}
+              communityPkId={pkId}
             />
           )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default CommunityDetailContent;
+export default CommunityTabContent;

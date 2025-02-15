@@ -1,16 +1,15 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { PlusCircle, MessageSquare, FilePlus, LogOut } from 'lucide-react'; // Import icons
-import { useNavigate } from 'react-router-dom';
 
 
 interface AddDropdownMenuProps {
   setIsModalOpen: (isOpen: boolean) => void; // Function to open/close the modal
   pkId?: string; // Community ID (UUID or string)
   handleLeaveCommunity: (communaute_id: string) => void; // Function to handle leaving the community
+  setIsRessourceModalOpen: (isRessourceOpen: boolean) => void;
 }
-const AddDropdownMenu: React.FC<AddDropdownMenuProps> = ({ setIsModalOpen, pkId, handleLeaveCommunity }) => {
-  const navigate = useNavigate();
+const AddDropdownMenu: React.FC<AddDropdownMenuProps> = ({ setIsModalOpen, pkId, handleLeaveCommunity, setIsRessourceModalOpen }) => {
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -56,7 +55,7 @@ const AddDropdownMenu: React.FC<AddDropdownMenuProps> = ({ setIsModalOpen, pkId,
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={() => navigate(`/communaute-details/${pkId}/add-resource`)}
+                  onClick={() => setIsRessourceModalOpen(true)}
                   className={`${
                     active ? 'bg-[#ef8450] text-white' : 'text-gray-900'
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm`}

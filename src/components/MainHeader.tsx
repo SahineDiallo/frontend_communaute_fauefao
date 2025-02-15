@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Menu } from "../utils/Menus"
 import { MenuItem } from '../utils/Menus';
-import LanguageSwitcher from "./LanguageSwitcher";
 import  Logo  from "../assets/logo-fauefao.png"
 // import { ChevronDown, User } from 'lucide-react';
 import MobileMenu  from "../components/menu/mobile"
@@ -14,8 +13,9 @@ import { ChevronDown, LogOut, User } from 'lucide-react';
 const MainHeader:React.FC = () => {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth); // Get auth state from Redux
   const { logout } = useAuth();
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
-
+  console.log("here is the is authenticated", user);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -30,9 +30,9 @@ const MainHeader:React.FC = () => {
           <div className="flex items-center space-x-6">
             <span>Données</span>
             <button className="text-orange-500">Se connecter</button>
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <LanguageSwitcher/>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ const MainHeader:React.FC = () => {
         </div>
         <ul className="hidden lg:flex items-center gap-6 ">
           {Menu.map((item:MenuItem) => (
-            <li key={item.path}>
+            <li key={item.name}>
               <Link 
                 to={item.path} 
                 className="flex items-center gap-2 hover:text-blue-600 transition-colors"
@@ -61,13 +61,14 @@ const MainHeader:React.FC = () => {
             <LanguageSwitcher/>
           </div> */}
           {isAuthenticated ? (
+              
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
                   className="flex items-center space-x-2 focus:outline-none"
                 >
                   <img
-                    src={user?.profile?.image_url || 'https://via.placeholder.com/40'} // Fallback image
+                    src={`${domain}${user?.profile.image_url}`} // Fallback image
                     alt="Profile"
                     className="w-8 h-8 rounded-full"
                   />
@@ -85,15 +86,6 @@ const MainHeader:React.FC = () => {
                         <span>Profil</span>
                       </div>
                     </Link>
-                    {/* <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <Settings className="w-4 h-4" />
-                        <span>Paramètres</span>
-                      </div>
-                    </Link> */}
                     <button
                       onClick={logout}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -110,7 +102,7 @@ const MainHeader:React.FC = () => {
               <Link to="/login" className="text-orange-500">
                 Se connecter
               </Link>
-            )}
+          )}
         </div>
       </nav>
     </header>

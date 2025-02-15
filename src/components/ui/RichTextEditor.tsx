@@ -50,9 +50,10 @@ interface RichTextEditorProps {
   content: string; // The content of the editor (HTML string)
   onChange: (content: string) => void; // Callback for when the content changes
   onTempFileUpload?: (tempFilePath: string) => void; // Callback for temporary file uploads (optional)
+  textOnly?: boolean;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTempFileUpload }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTempFileUpload, textOnly = false }) => {
   const [uploading, setUploading] = useState(false);
 
 
@@ -79,6 +80,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
       Youtube.configure({
         inline: true,
         controls: true,
+        width: 640,
+        height: 480,
+        nocookie: true
       }),
     ],
     content,
@@ -136,9 +140,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
       }
   
       const data = await response.json();
-      const tempFilePath = data.tempFilePath; // Temporary file path
+      const tempFilePath = data.fileUrl; // Temporary file path
       const fileName = data.fileName; // File name
-      const fileId = data.tempFileId
+      const fileId = data.fichierId
+      console.log("here is the file tempFilePath", tempFilePath);
   
       // Store the temporary file path in state
       if (onTempFileUpload) {
@@ -213,11 +218,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
   };
 
   const addYoutubeVideo = () => {
-    const url = prompt('Enter YouTube URL');
+    const url = prompt('Veuillez entrer le lien YouTube');
     if (url) {
-      editor?.chain().focus().setYoutubeVideo({ src: url }).run();
+      console.log("Here is the URL:", url);
+      const videoId = extractYoutubeId(url);
+      if (videoId) {
+        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        editor?.chain().focus().setYoutubeVideo({ src: embedUrl }).run();
+      } else {
+        alert('Lien YouTube invalide. Veuillez réessayer.');
+      }
     }
   };
+  
+  function extractYoutubeId(url: string): string {
+    const videoIdMatch = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    return videoIdMatch ? videoIdMatch[1] : '';
+  }
 
   const setLink = () => {
     const previousUrl = editor?.getAttributes('link').href;
@@ -340,19 +359,26 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
         <button type="button" onClick={setLink}>
           <LinkIcon size={20} />
         </button>
-        <button type="button" onClick={handleImageUploadClick} disabled={uploading}>
-          <ImageIcon size={20} />
-        </button>
+        {/* Conditionally render image, file upload, and YouTube buttons */}
+        {!textOnly && (
+          <>
+            <button type="button" onClick={handleImageUploadClick} disabled={uploading}>
+              <ImageIcon size={20} />
+            </button>
+            <button type="button" onClick={handleFileUploadClick} disabled={uploading}>
+              <Paperclip size={20} />
+            </button>
+            <button type="button" onClick={addYoutubeVideo}>
+              <YoutubeIcon size={20} />
+            </button>
+          </>
+        )}
 
         {/* Attach File */}
         <button type="button" onClick={handleFileUploadClick} disabled={uploading}>
           <Paperclip size={20} />
         </button>
 
-        {/* YouTube Videos */}
-        <button type="button" onClick={addYoutubeVideo}>
-          <YoutubeIcon size={20} />
-        </button>
 
         {/* Blockquotes and Code Blocks */}
         <button

@@ -102,12 +102,26 @@ const useAuth = () => {
     }
   };
   // Wrap refreshTokenFunc in useCallback
-  const refreshTokenFunc = useCallback(async () => {
+  const refreshTokenFunc = useCallback(async (): Promise<string> => {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
+      // Log out the user
+      logoutUser();
+  
+      // Show a confirmation dialog with two buttons
+      const confirmLogin = window.confirm(
+        "Votre session a expiré. Souhaitez-vous vous reconnecter?\n\nCliquez sur 'Se connecter' pour vous reconnecter ou sur 'Annuler' pour rester sur la page actuelle."
+      );
+  
+      // Redirect to the login page if the user clicks "Se connecter"
+      if (confirmLogin) {
+        navigate('/login');
+      }
+  
+      // Throw an error to stop further execution
       throw new Error('No refresh token found');
     }
-
+  
     try {
       const response = await fetch('http://127.0.0.1:8000/api/v1/auth/jwt/refresh/', {
         method: 'POST',
@@ -116,24 +130,39 @@ const useAuth = () => {
         },
         body: JSON.stringify({ refresh: refreshToken }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to refresh token');
       }
-
+  
       const data = await response.json();
+      console.log("here is the data", data);
       const newToken = data.access;
-
+  
       // Update the token in localStorage and Redux
       localStorage.setItem('token', newToken);
       dispatch(loginSuccess({ token: newToken }));
-
+  
       return newToken;
     } catch (err) {
-      console.error(err)
-      throw new Error('Failed to refresh token');
+      console.error(err);
+  
+      // Narrow down the error type
+      if (err instanceof Error) {
+        // If the refresh token is expired, log out the user
+        if (err.message === "Failed to refresh token") {
+          logoutUser();
+          alert("Your session has expired. Please log in again.");
+        }
+      } else {
+        // Handle cases where the error is not an Error object
+        console.error("An unexpected error occurred:", err);
+        alert("An unexpected error occurred. Please try again.");
+      }
+  
+      throw err; // Re-throw the error for the caller to handle
     }
-  }, [dispatch]);
+  }, [dispatch, logoutUser, navigate]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');

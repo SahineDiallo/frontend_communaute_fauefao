@@ -8,10 +8,10 @@ interface Stat {
 
 export function StatsSection() {
   const stats: Stat[] = [
-    { icon: <Users className="h-6 w-6" />, label: "Communauté", value: 10 },
-    { icon: <User2 className="h-6 w-6" />, label: "Membres", value: 33 },
-    { icon: <Handshake className="h-6 w-6" />, label: "Partenaires", value: 9 },
-    { icon: <FileText className="h-6 w-6" />, label: "Ressources", value: 25 },
+    { icon: <Users className="h-8 w-8" />, label: "Communauté", value: 10 },
+    { icon: <User2 className="h-8 w-8" />, label: "Membres", value: 33 },
+    { icon: <Handshake className="h-8 w-8" />, label: "Partenaires", value: 9 },
+    { icon: <FileText className="h-8 w-8" />, label: "Ressources", value: 25 },
   ]
 
   return (

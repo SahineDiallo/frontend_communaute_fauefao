@@ -19,19 +19,19 @@ export const Menu: MenuItem[] = [
     name: "Institutions",
     description: "Découvrez nos institutions partenaires",
     icon: Building2,
-    path: "/institutions"
+    path: "/all-institutions"
   },
   {
     name: "Membres",
     description: "Explorez nos membres",
     icon: Users2,
-    path: "/membres"
+    path: "/all-members"
   },
   {
     name: "Communautés",
     description: "Découvrez nos communautés",
     icon: Network,
-    path: "/communautes"
+    path: "/"
   }
 ];
 
@@ -40,24 +40,24 @@ export const DetailPageMenuItems: MenuItem[] = [
     name: "À Propos",
     description: "Page d'accueil du site",
     icon: Home,
-    path: "/",
+    path: "/communaute-details/:pkId/a-propos", // Updated path
   },
   {
     name: "Membres",
     description: "Liste des membres",
     icon: Users,
-    path: "/membres",
+    path: "/communaute-details/:pkId/membres", // Updated path
   },
   {
     name: "Discussions",
     description: "Forum de discussions",
     icon: MessageCircle,
-    path: "/discussions",
+    path: "/communaute-details/:pkId/discussions", // Updated path
   },
   {
     name: "Ressources",
     description: "Accès aux ressources",
     icon: BookOpen,
-    path: "/ressources",
+    path: "/communaute-details/:pkId/ressources", // Updated path
   },
 ];

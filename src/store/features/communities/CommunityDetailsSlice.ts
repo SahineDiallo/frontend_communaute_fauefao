@@ -17,7 +17,8 @@ const initialState: CommunityDetailsState = {
 export const fetchCommunityDetails = createAsyncThunk<Community, string>(
   'communityDetails/fetchCommunityDetails',
   async (pkId) => {
-    const response = await fetch(`http://localhost:8000/api/communautes/${pkId}/`);
+    const domain = import.meta.env.VITE_MAIN_DOMAIN;
+    const response = await fetch(`${domain}/api/communautes/${pkId}/`);
     if (!response.ok) {
       throw new Error('Failed to fetch community details');
     }

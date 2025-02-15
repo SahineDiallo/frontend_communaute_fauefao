@@ -6,15 +6,17 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 interface DiscussionFormProps {
-  onClose: () => void;
+  onClose: (new_obj?: { new_obj: boolean }) => void;
   tempFiles: string[];
   onTempFileUpload?: (tempFilePath: string) => void; // Callback for temporary file uploads
+  resetFiles: () => void;
 }
 
 interface Errors {
   titre?: string; // Optional error message for the title field
   contenu?: string; // Optional error message for the content field
   backend?: string; // Optional error message for backend errors
+  headlineDescription?: string;
 }
 
 
@@ -22,9 +24,11 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
   onClose,
   onTempFileUpload,
   tempFiles,
+  resetFiles
 }) => {
   const [formData, setFormData] = useState({
     titre: '',
+    headlineDescription: "",
     contenu: '',
   });
   const [errors, setErrors] = useState<Errors>({});
@@ -32,8 +36,9 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
 
   const validateForm = () => {
     const newErrors: {titre?: string, contenu?: string}  = {};
-    if (!formData.titre) newErrors.titre = 'Titre is required';
-    if (!formData.contenu) newErrors.contenu = 'Contenu is required';
+    if (!formData.titre) newErrors.titre = 'Un titre est requis';
+    if (!formData.contenu) newErrors.contenu = 'Contenu est un champs requis';
+    if (!formData.headlineDescription) newErrors.contenu = 'Résumé est un champs requis';
     setErrors(newErrors);
 
 
@@ -63,8 +68,19 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
       contenu: '',
     });
   };
+  const handleEditorDescChange = (content: string) => {
+    setFormData({
+      ...formData,
+      headlineDescription: content,
+    });
+    // Clear errors when the user starts typing
+    setErrors({
+      ...errors,
+      headlineDescription: '',
+    });
+  };
 
-  const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return; // Stop if validation fails
     console.log("here is the form data", formData);
@@ -81,7 +97,8 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
           titre: formData.titre,
           contenu: formData.contenu,
           communaute: pkId, // Replace with the actual communaute UUID
-          tempFiles: tempFiles,
+          fichierIds: tempFiles,
+          headlineDescription: formData.headlineDescription
         }), // Convert form data to JSON
       });
   
@@ -93,7 +110,8 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
   
       const data = await response.json(); // Parse the JSON response
       toast.success('Discussion créée avec succès !')
-      onClose(); // Close the form (if needed)
+      resetFiles();
+      onClose({new_obj: true}); // Close the form (if needed)
       console.log('Discussion created:', data);
     } catch (error) {
       console.error('Error creating discussion:', error);
@@ -113,7 +131,7 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
     }
   };
   return (
-    <form onSubmit={()=> handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       {/* Titre Field */}
       <InputWithIcon
         icon={<MessageSquare className="h-5 w-5 text-gray-400" />}
@@ -123,10 +141,21 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
         onChange={handleChange}
         required
       />
-
+      <div>
+        <label htmlFor="contenu" className="block text-sm font-medium text-gray-700 mb-1">
+          Résumé de la discussion
+        </label>
+        <RichTextEditor
+          content={formData.headlineDescription}
+          onChange={handleEditorDescChange}
+          onTempFileUpload={onTempFileUpload}
+          textOnly = {true}
+        />
+        {errors.headlineDescription && <p className="text-red-500 text-sm mt-1">{errors.headlineDescription}</p>}
+      </div>
       {/* Contenu Field */}
       <div>
-        <label htmlFor="contenu" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="contenu" className="block text-sm font-medium text-gray-700 mb-1">
           Contenu
         </label>
         <RichTextEditor
@@ -141,7 +170,7 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
       <div className="flex justify-end space-x-4">
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => onClose()}
           className="inline-flex justify-center rounded-0 border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
           Annuler

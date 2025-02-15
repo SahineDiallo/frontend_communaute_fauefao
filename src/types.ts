@@ -28,7 +28,7 @@ export interface Membership {
   date_joined: string; // Date the user joined the community (ISO format)
 }
 
-interface Category {
+export interface Category {
   pkId: string,
   nom: string,
   description: string
@@ -46,6 +46,7 @@ export interface Community {
 export interface Discussion {
   pkId: string;
   titre: string;
+  headlineDescription: string;
   contenu: string;
   date_creation: string;
   auteur: {
@@ -54,20 +55,35 @@ export interface Discussion {
   }
   commentCount: 0;
 }
+export type StakeholderType = "Government" | "Other" | "Research centers and academia" | "Non-governmental organization"
+export interface Stakeholder {
+  id: string
+  name: string
+  type: StakeholderType
+  logo: string
+  websiteUrl: string
+}
+
 
 export interface File {
-  pkId: string;
-  fichier: string;
-  nom: string;
+  nom: string; // File name
+  fichier_url: string; // URL to the file
+  auteur?: User; // Optional author
+  date_creation: string; // Upload date
+  pkId: string; // File ID
+  community?: Community; // Community ID (optional)
+  discussion?: Discussion; // Discussion ID (optional)
 }
 
 export interface TabData {
+  count?:number;
   results?: Membership[] | Discussion[] | File[];
 }
 export interface TabContentProps {
   tab: string;
   data: string | TabData[] | null; // string for 'À Propos', array for other tabs
   loading: boolean;
+  communityPkId: string;
   pagination: {
     count: number;
     next: string | null;
@@ -75,4 +91,19 @@ export interface TabContentProps {
   } | null;
   onNextPage?: () => void; // Callback for next page
   onPreviousPage?: () => void; // Callback for previous page
+}
+
+export interface ActivityItemProps {
+  user: User
+  action: string
+  timestamp: string
+  discussion?: Discussion
+  fichier?: File
+  community: Community
+}
+
+export interface FilterParams {
+  query: string;
+  type: string;
+  category: string;
 }

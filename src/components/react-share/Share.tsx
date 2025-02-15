@@ -20,7 +20,7 @@ const SocialShareDropdown = () => {
     <Menu as="div" className="relative inline-block text-right">
       {/* Dropdown Button */}
       <div>
-        <Menu.Button className="inline-flex justify-center bg-[#1f7e60] px-6 py-3 text-sm font-medium text-white bg-primary rounded-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
+        <Menu.Button className="inline-flex justify-center bg-[#1f7e60] px-6 py-3 text-sm font-medium text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
             <ShareIcon className='h-5 w-5 mr-2' />
             Partager
         </Menu.Button>

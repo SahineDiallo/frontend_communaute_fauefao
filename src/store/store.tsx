@@ -5,18 +5,40 @@ import tabsReducer from './features/tabs/tabsSlice';
 import authReducer from './features/auth/authSlice';
 import communitiesReducer from './features/communities/CommunitySlice';
 import communityDetailsReducer from './features/communities/CommunityDetailsSlice';
+import categoriesReducer from './features/categories/categoriesSlice'
 
-// Persist configuration
-const persistConfig = {
-  key: 'root',
+// Create unique persist configurations for each reducer
+const tabsPersistConfig = {
+  key: 'tabs',
   storage,
 };
 
-// Wrap each reducer with persistReducer
-const persistedTabsReducer = persistReducer(persistConfig, tabsReducer);
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
-const persistedCommunitiesReducer = persistReducer(persistConfig, communitiesReducer);
-const persistedCommunityDetailsReducer = persistReducer(persistConfig, communityDetailsReducer);
+const authPersistConfig = {
+  key: 'auth',
+  storage,
+};
+
+const communitiesPersistConfig = {
+  key: 'communities',
+  storage,
+};
+
+const categoriesPersistConfig = {
+  key: "community categories",
+  storage,
+}
+
+const communityDetailsPersistConfig = {
+  key: 'communityDetails',
+  storage,
+};
+
+// Wrap each reducer with persistReducer and unique config
+const persistedTabsReducer = persistReducer(tabsPersistConfig, tabsReducer);
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+const persistedCommunitiesReducer = persistReducer(communitiesPersistConfig, communitiesReducer);
+const persistedCategoriesReducer = persistReducer(categoriesPersistConfig, categoriesReducer)
+const persistedCommunityDetailsReducer = persistReducer(communityDetailsPersistConfig, communityDetailsReducer);
 
 // Configure the store
 const store = configureStore({
@@ -24,6 +46,7 @@ const store = configureStore({
     tabs: persistedTabsReducer,
     auth: persistedAuthReducer,
     communities: persistedCommunitiesReducer,
+    categories: persistedCategoriesReducer,
     communityDetails: persistedCommunityDetailsReducer,
   },
   middleware: (getDefaultMiddleware) =>

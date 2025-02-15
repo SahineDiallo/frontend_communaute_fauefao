@@ -5,9 +5,10 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  title: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
   // Prevent closing the modal when clicking outside or pressing Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -28,18 +29,25 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-3xl overflow-y-auto md:w-3/4 md:max-h-[90vh] md:rounded-lg">
-        <div className="flex justify-end p-4">
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="h-6 w-6" /> {/* Close icon */}
-          </button>
-        </div>
-        <div className="p-6">
-          {children} {/* Render the form inside the modal */}
+
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white w-full max-w-3xl overflow-hidden md:w-3/4 md:rounded-none">
+          {/* Fixed Header */}
+          <div className="bg-white p-4 border-b border-gray-200 z-10">
+            <div className="flex justify-between">
+              <h5 className='font-semibold text-xl'>{title}</h5>
+              <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                <X className="h-6 w-6" /> {/* Close icon */}
+              </button>
+            </div>
+          </div>
+
+          {/* Scrollable Body */}
+          <div className="pt-6 pb-6 px-6 overflow-y-auto" style={{ maxHeight: '80vh' }}>
+            {children} {/* Render the form inside the modal */}
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

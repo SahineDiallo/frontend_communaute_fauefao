@@ -1,6 +1,6 @@
-import { ChevronDown } from 'lucide-react';
 import React from 'react';
-import { MenuItem } from '../../utils/Menus';
+import { DetailPageMenuItems, MenuItem } from '../../utils/Menus';
+import { Link } from 'react-router-dom';
 
 
 
@@ -9,18 +9,25 @@ interface PageDetailMenuProps {
 }
 
 
-const PageDetailsMenu: React.FC<PageDetailMenuProps> = ({ MenuItem }) => {
-    const hasSubMenu = MenuItem?.subMenus && MenuItem?.subMenus?.length > 0; // Check if there are submenu items
+const PageDetailsMenu: React.FC<PageDetailMenuProps> = () => {// Check if there are submenu items
   
     return (
-      <li key={MenuItem.path} className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-          <MenuItem.icon size={20} />
-          <span className="flex items-center">
-            {MenuItem.name}
-            {hasSubMenu && <ChevronDown className="ml-1 mt-0.5" />}
-          </span>
-      </li>
-    );
+      <div className="flex space-x-4">
+        {DetailPageMenuItems.map((item) => {
+          const Icon = item.icon; // Extract the icon component
+          return (
+            <Link
+              key={item.name}
+              to={item.path}
+              className="flex items-center space-x-2 text-gray-600 hover:text-[#e86928]"
+            >
+              <Icon className="w-5 h-5" /> {/* Render the icon */}
+              <span>{item.name}</span>
+            </Link>
+          );
+        })}
+      </div>
+    )
   };
   
   export default PageDetailsMenu;

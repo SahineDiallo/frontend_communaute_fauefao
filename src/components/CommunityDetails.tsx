@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../hooks/useAppSelector';
 import MenuPageDetail from './MenuPageDetail';
 import { DetailPageMenuItems } from '../utils/Menus';
-import CommunityDetailContent from './CommunityDetailsContent';
 import { fetchCommunityDetails } from '../store/features/communities/CommunityDetailsSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
+import CommunityTabContent from './CommunityTabContent';
 
 const CommunityDetails = () => {
   const { pkId } = useParams<{ pkId: string }>();
@@ -43,12 +43,15 @@ const CommunityDetails = () => {
         <div className="border-b-2 border-gray-100 pb-4">
           <h1 className="h1">{community.nom}</h1>
           <span className="text-gray-500">
-            {community.categories.map((cat) => cat.nom).join(', ')}
+            
+            {
+              (community?.categories?.length) && (community.categories.map((cat) => cat.nom).join(', '))
+            }
           </span>
         </div>
-        <MenuPageDetail MenuItems={DetailPageMenuItems} />
+        <MenuPageDetail MenuItems={DetailPageMenuItems} communityPkId={community.pkId} />
       </div>
-      <CommunityDetailContent community={community} />
+      <CommunityTabContent />
     </>
   );
 };

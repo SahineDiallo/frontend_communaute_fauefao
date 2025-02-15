@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '../components/ui/card';
 
@@ -11,12 +12,11 @@ interface NewsCardProps {
   title: string;
   description: string;
   imageUrl: string;
-  categories: Category[]; // Add categories prop
 }
 
-export function NewsCard({ pkId, title, description, imageUrl, categories }: NewsCardProps) {
+export function NewsCard({ pkId, title, description, imageUrl }: NewsCardProps) {
   return (
-    <Card className="overflow-hidden rounded-none">
+    <Card className="overflow-hidden rounded-none shadow-none">
       <div className="relative h-48 md:h-64">
         <img
           src={imageUrl}
@@ -25,21 +25,21 @@ export function NewsCard({ pkId, title, description, imageUrl, categories }: New
         />
       </div>
 
-      <CardHeader className="px-0">
-        {categories && categories.length > 0 && (
+      <CardHeader className="p-0 mt-2 mb-3">
+        {/* {categories && categories.length > 0 && (
           <div className="mt-0">
             <span className="text-sm text-muted-foreground"></span>
             {categories.map(cat => (
               <span key={cat.pkId} className='text-sm'>{cat.nom} </span>
             ))}
           </div>
-        )}
-        <Link to={`/communaute-details/${pkId}`} className="h3 hover:text-primary text-xl font-semibold leading-tight transition-colors">
+        )} */}
+        <Link to={`/communaute-details/${pkId}/a-propos`} className="h4 hover:text-primary/2 text-md font-normal leading-tight transition-colors mb-0 text-black">
             {title}
         </Link>
       </CardHeader>
       <CardContent className='px-0'>
-        <p className="text-muted-foreground line-clamp-3">{description}</p>
+        <p className="text-muted-foreground line-clamp-4 font-extralight text-sm">{description}</p>
       </CardContent>
     </Card>
   );

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { selectActiveTab } from '../store/features/tabs/tabsSelectors';
 import Skeleton from './skeleton/Skeleton';
-import { Community } from '../types';
+import { ActivityItemProps, Community } from '../types';
 import { ActivityItem } from './ActivityItem';
 import TabContent from './tabContent';
 
@@ -129,18 +129,8 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
   }, [activeTab, community?.pkId, community.description]);
   
   
-  const recentActivities = [  
-    {
-      user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-      action: "added a Community document",
-      date: "25/07/2023 - 11:20",
-    },
-    {user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-    action: "added a Community document",
-    date: "25/07/2023 - 11:20",},
-    {user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-    action: "added a Community document",
-    date: "25/07/2023 - 11:20",}
+  const recentActivities: ActivityItemProps[] = [  
+
 
   ]
 

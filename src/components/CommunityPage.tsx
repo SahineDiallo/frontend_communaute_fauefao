@@ -113,7 +113,7 @@ const CommunitiesPage: React.FC = () => {
 
       <section className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8">
         <Card className="border-0">
-          <CardContent className="p-6">
+          <CardContent className="p-0">
             <div className="grid md:grid-cols-[1fr_2fr] gap-8 items-start">
               <div>
                 <CardHeader className="p-0">

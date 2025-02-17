@@ -11,7 +11,7 @@ export interface FeaturedArticleProps {
 }
 
 interface FeaturedSectionProps {
-  featuredCommunity: FeaturedArticleProps;
+  featuredCommunity: FeaturedArticleProps | null;
   activities: ActivityItem[];
 }
 
@@ -23,17 +23,17 @@ export function FeaturedSection({ featuredCommunity, activities }: FeaturedSecti
         <Card className="overflow-hidden rounded-none">
           <div className="relative aspect-[16/10] md:aspect-[16/9]">
             <img
-              src={featuredCommunity.imageUrl}
-              alt={featuredCommunity.title}
+              src={featuredCommunity?.imageUrl}
+              alt={featuredCommunity?.title}
               className="object-cover w-full h-full"
             />
           </div>
           <CardContent className="px-0 py-4">
             <div className="text-sm text-muted-foreground mb-2">
-              {formatDate(featuredCommunity.date)}
+              {featuredCommunity?.date && formatDate(featuredCommunity.date)}
             </div>
-            <h2 className="text-2xl font-semibold mb-3">{featuredCommunity.title}</h2>
-            <p className="text-muted-foreground line-clamp-2">{featuredCommunity.description}</p>
+            <h2 className="text-2xl font-semibold mb-3">{featuredCommunity?.title}</h2>
+            <p className="text-muted-foreground line-clamp-2">{featuredCommunity?.description}</p>
           </CardContent>
         </Card>
       </div>

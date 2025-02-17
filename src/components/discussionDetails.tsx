@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import Skeleton from './skeleton/Skeleton';
-import { ActivityItemProps, Discussion } from '../types';
+import { ActivityItemProps, Discussion, File } from '../types';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { ActivityItem } from './ActivityItem';
 import { DetailPageMenuItems } from '../utils/Menus';
@@ -59,9 +59,9 @@ const PostDetails = () => {
   // Use useParams with explicit types
   const { pkId, postId } = useParams<{ pkId: string, postId: string }>();
   // Define state with proper types
-  const [post, setPost] = useState<Post>();
+  const [post, setPost] = useState<Discussion>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [discussionFichiers, setDiscussionFichiers] = useState([])
+  const [discussionFichiers, setDiscussionFichiers] = useState<File[]>([])
   const [error, setError] = useState<string | null>(null);
   const { data: community} = useAppSelector((state) => state.communityDetails);
   const domain = import.meta.env.VITE_MAIN_DOMAIN
@@ -109,7 +109,7 @@ const PostDetails = () => {
         fetchPost();
     };
 
-  }, [postId, pkId]);
+  }, [postId, pkId, navigate]);
 
   // Render loading state
   if (loading) {

@@ -1,13 +1,9 @@
 import React from "react";
+import { File } from "../types";
 
-type Fichier = {
-  pkId: string;
-  nom: string;
-  fichier: string;
-};
 
 type FichiersListProps = {
-  fichiers: Fichier[];
+  fichiers: File[];
 };
 
 const FichiersList: React.FC<FichiersListProps> = ({ fichiers }) => {
@@ -19,7 +15,7 @@ const FichiersList: React.FC<FichiersListProps> = ({ fichiers }) => {
         {fichiers.map((fichier) => (
           <li key={fichier.pkId} className="mb-2">
             <a
-              href={`${baseURL}${fichier.fichier}`}
+              href={`${baseURL}${fichier.fichier_url}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"

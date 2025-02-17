@@ -1,5 +1,5 @@
 
-import { PlusCircle, LayoutGrid, List } from "lucide-react"
+import { LayoutGrid, List } from "lucide-react"
 import { useState } from "react"
 import { Button } from "../ui/Button"
 import { StakeholderCard } from "../InstitutionCard"
@@ -7,11 +7,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, CountryS
 import { HeroSection } from "../home/Hero-section"
 import { Input } from "../ui/input"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/Accordion"
-import countryList from "react-select-country-list"
+import { Stakeholder } from "../../types"
 
 
 
-const MOCK_STAKEHOLDERS = [
+
+const MOCK_STAKEHOLDERS: Stakeholder[] = [
   {
     id: "1",
     name: "VoxDev",

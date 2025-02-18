@@ -24,16 +24,17 @@ const CommunityTabContent = () => {
   const { data: community } = useAppSelector((state) => state.communityDetails);
 
   const fetchTabData = async (tab: string, pkId: string) => {
+    const domain = import.meta.env.VITE_MAIN_DOMAIN;
     let url = '';
     switch (tab) {
       case 'membres':
-        url = `http://localhost:8000/api/community-members/${pkId}/`;
+        url = `${domain}/api/community-members/${pkId}/`;
         break;
       case 'discussions':
-        url = `http://localhost:8000/api/discussions/?communaute_id=${pkId}`;
+        url = `${domain}/api/discussions/?communaute_id=${pkId}`;
         break;
       case 'ressources':
-        url = `http://localhost:8000/api/fichiers/?communaute_id=${pkId}`;
+        url = `${domain}/api/fichiers/?communaute_id=${pkId}`;
         break;
       default:
         throw new Error(`Unknown tab: ${tab}`);

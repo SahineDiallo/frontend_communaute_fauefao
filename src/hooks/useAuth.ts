@@ -13,12 +13,13 @@ const useAuth = () => {
   const next = searchParams.get('next') || '/';
 
   const login = async (email: string, password: string) => {
+    const domain = import.meta.env.VITE_MAIN_DOMAIN;
     setIsLoading(true);
     setError(null);
 
     try {
       // Step 1: Get JWT tokens
-      const tokenResponse = await fetch('http://127.0.0.1:8000/api/v1/auth/jwt/create/', {
+      const tokenResponse = await fetch(`${domain}/api/v1/auth/jwt/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ const useAuth = () => {
       const { access: token, refresh: refreshToken } = tokenData;
 
       // Step 2: Fetch user info
-      const userResponse = await fetch('http://127.0.0.1:8000/api/v1/auth/users/me/', {
+      const userResponse = await fetch(`${domain}/api/v1/auth/users/me/`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -104,6 +105,7 @@ const useAuth = () => {
   // Wrap refreshTokenFunc in useCallback
   const refreshTokenFunc = useCallback(async (): Promise<string> => {
     const refreshToken = localStorage.getItem('refreshToken');
+    const domain = import.meta.env.VITE_MAIN_DOMAIN;
     if (!refreshToken) {
       // Log out the user
       logoutUser();
@@ -123,7 +125,7 @@ const useAuth = () => {
     }
   
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/v1/auth/jwt/refresh/', {
+      const response = await fetch(`${domain}/api/v1/auth/jwt/refresh/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

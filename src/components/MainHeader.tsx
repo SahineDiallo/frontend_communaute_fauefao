@@ -1,24 +1,43 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu } from "../utils/Menus"
+import { Menu } from "../utils/Menus";
 import { MenuItem } from '../utils/Menus';
-import  Logo  from "../assets/logo-fauefao.png"
-// import { ChevronDown, User } from 'lucide-react';
-import MobileMenu  from "../components/menu/mobile"
+import Logo from "../assets/logo-fauefao.png";
+import MobileMenu from "../components/menu/mobile";
 import useAuth from '../hooks/useAuth';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { ChevronDown, LogOut, User } from 'lucide-react';
+import { ChevronDown, LogOut, MenuIcon, User } from 'lucide-react';
 
-
-const MainHeader:React.FC = () => {
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth); // Get auth state from Redux
+const MainHeader: React.FC = () => {
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const { logout } = useAuth();
-  const domain = import.meta.env.VITE_MAIN_DOMAIN
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
-  console.log("here is the is authenticated", user);
+  const domain = import.meta.env.VITE_MAIN_DOMAIN;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <header>
       <div className='bg-[#FDF2E9] hidden lg:block'>
@@ -30,24 +49,27 @@ const MainHeader:React.FC = () => {
           <div className="flex items-center space-x-6">
             <span>Données</span>
             <button className="text-orange-500">Se connecter</button>
-            {/* <div className="flex items-center space-x-2">
-              <LanguageSwitcher/>
-            </div> */}
           </div>
         </div>
       </div>
-      <nav className="container mx-auto px-6 py-4 flex-between md:px-3">
-        <div className="flex-center gap-x-5">
+
+      <nav className="container mx-auto px-6 py-4 flex-between md:px-3 relative">
+
+        <div className="flex items-center flex-center lg:gap-x-5">
+          <button onClick={toggleMobileMenu} className="lg:hidden size-5 mb-2">
+            <MenuIcon size={30} className='mb-3'/>
+          </button>
           <div className="flex-center gap-4">
-            <MobileMenu MobileMenus={Menu} />
-            <img src={Logo} alt="Logo Fauefao" className='lg:h-[40px] sm:h-[30px] object-contain' />
+            <MobileMenu MobileMenus={Menu} isOpen={isMobileMenuOpen} closeMenu={closeMobileMenu} />
+            <img src={Logo} alt="Logo Fauefao" className='h-8 object-contain' /> {/* Reduced logo size */}
           </div>
         </div>
-        <ul className="hidden lg:flex items-center gap-6 ">
-          {Menu.map((item:MenuItem) => (
+
+        <ul className="hidden lg:flex items-center gap-6">
+          {Menu.map((item: MenuItem) => (
             <li key={item.name}>
-              <Link 
-                to={item.path} 
+              <Link
+                to={item.path}
                 className="flex items-center gap-2 hover:text-blue-600 transition-colors"
               >
                 <item.icon size={20} />
@@ -56,57 +78,55 @@ const MainHeader:React.FC = () => {
             </li>
           ))}
         </ul>
+
         <div className='flex-center'>
-          {/* <div className="flex items-center space-x-2">
-            <LanguageSwitcher/>
-          </div> */}
           {isAuthenticated ? (
-              
-              <div className="relative">
-                <button
-                  onClick={toggleDropdown}
-                  className="flex items-center space-x-2 focus:outline-none"
-                >
-                  <img
-                    src={`${domain}${user?.profile.image_url}`} // Fallback image
-                    alt="Profile"
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <span>{user?.full_name}</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4" />
-                        <span>Profil</span>
-                      </div>
-                    </Link>
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <LogOut className="w-4 h-4" />
-                        <span>Déconnexion</span>
-                      </div>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Link to="/login" className="text-orange-500">
-                Se connecter
-              </Link>
+            <div className="relative">
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center space-x-2 focus:outline-none"
+              >
+                <img
+                  src={`${domain}${user?.profile.image_url}`}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full"
+                />
+                <span>{user?.full_name}</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={closeMobileMenu}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span>Profil</span>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <LogOut className="w-4 h-4" />
+                      <span>Déconnexion</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/login" className="text-orange-500">
+              Se connecter
+            </Link>
           )}
         </div>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default MainHeader
+export default MainHeader;

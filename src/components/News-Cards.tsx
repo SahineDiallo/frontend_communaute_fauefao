@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '../components/ui/card';
 
@@ -17,7 +17,7 @@ interface NewsCardProps {
 export function NewsCard({ pkId, title, description, imageUrl }: NewsCardProps) {
   return (
     <Card className="overflow-hidden rounded-none shadow-none">
-      <div className="relative h-48 md:h-64">
+      <div className="relative md:h-64 w-full">
         <img
           src={imageUrl}
           alt={title}

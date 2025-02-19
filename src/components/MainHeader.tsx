@@ -46,10 +46,10 @@ const MainHeader: React.FC = () => {
             <span>+221 33 864 77 57</span>
             <span>contact@femmesautonomes.org</span>
           </div>
-          <div className="flex items-center space-x-6">
+          {/* <div className="flex items-center space-x-6">
             <span>Données</span>
             <button className="text-orange-500">Se connecter</button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -61,7 +61,9 @@ const MainHeader: React.FC = () => {
           </button>
           <div className="flex-center gap-4">
             <MobileMenu MobileMenus={Menu} isOpen={isMobileMenuOpen} closeMenu={closeMobileMenu} />
-            <img src={Logo} alt="Logo Fauefao" className='h-8 object-contain' /> {/* Reduced logo size */}
+            <Link to="/">
+              <img src={Logo} alt="Logo Fauefao" className='h-8 object-contain' /> {/* Reduced logo size */}
+            </Link>
           </div>
         </div>
 

@@ -19,7 +19,7 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>La communautés A la une</CardTitle>
+        <CardTitle>La communautés à la une</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {activities.map((activity) => (

@@ -90,7 +90,7 @@ const TabContent = ({
                 pkId={file.pkId}
               />
             )) : (
-              <p>Pas de discussions trouvées</p>
+              <p>Pas de ressources trouvées</p>
             )
             }
           </ul>

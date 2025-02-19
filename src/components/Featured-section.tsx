@@ -1,10 +1,8 @@
-import { formatDate } from "../lib/utils";
 import { ActivityFeed } from "./ActivityFeed";
 import { ActivityItem } from "./ActivityFeed"; // Import the ActivityItem type
 import { Card, CardContent } from "./ui/card";
 
 export interface FeaturedArticleProps {
-  date: string;
   title: string;
   description: string;
   imageUrl: string;
@@ -29,9 +27,6 @@ export function FeaturedSection({ featuredCommunity, activities }: FeaturedSecti
             />
           </div>
           <CardContent className="px-0 py-4">
-            <div className="text-sm text-muted-foreground mb-2">
-              {featuredCommunity?.date && formatDate(featuredCommunity.date)}
-            </div>
             <h2 className="text-2xl font-semibold mb-3">{featuredCommunity?.title}</h2>
             <p className="text-muted-foreground line-clamp-2">{featuredCommunity?.description}</p>
           </CardContent>

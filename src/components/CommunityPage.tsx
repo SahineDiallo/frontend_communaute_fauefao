@@ -163,7 +163,6 @@ const CommunitiesPage: React.FC = () => {
               featuredCommunity={
                 featuredCommunity
                   ? {
-                      date: new Date().toISOString(),
                       title: featuredCommunity.nom,
                       description: featuredCommunity.description,
                       imageUrl: featuredCommunity.thumbnail_image,

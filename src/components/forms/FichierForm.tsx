@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useAppSelector } from '../../hooks/useAppSelector';
 
 interface FichierFormProps {
   onClose: () => void; // Callback to close the form
@@ -18,8 +17,8 @@ const FichierForm: React.FC<FichierFormProps> = ({ onClose, communauteId }) => {
   const [nom, setNom] = useState<string>('');
   const [fichier, setFichier] = useState<File | null>(null);
   const [errors, setErrors] = useState<Errors>({});
-  const { user } = useAppSelector((state) => state.auth);
-  console.log("here is the auth user", user);
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
+  
 
   // Validate the form
   const validateForm = () => {
@@ -46,7 +45,7 @@ const FichierForm: React.FC<FichierFormProps> = ({ onClose, communauteId }) => {
 
     try {
       // Send data to the backend
-      const response = await fetch('http://localhost:8000/api/fichiers/', {
+      const response = await fetch(`${domain}/api/fichiers/`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

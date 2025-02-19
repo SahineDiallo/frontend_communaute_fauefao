@@ -13,6 +13,7 @@ interface CommunityDetailContentProps {
 const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
   const activeTab = useAppSelector(selectActiveTab);
   const [communityData, setCommunityData] = useState<string | null>(null);
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [errorState, setErrorState] = useState<string | null>(null);
   const [pagination, setPagination] = useState<{
@@ -26,13 +27,13 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     let url = '';
     switch (tab) {
       case 'Membres':
-        url = `http://localhost:8000/api/community-members/${pkId}/`;
+        url = `${domain}/api/community-members/${pkId}/`;
         break;
       case 'Discussions':
-        url = `http://localhost:8000/api/discussions/?communaute_id=${pkId}`;
+        url = `${domain}/api/discussions/?communaute_id=${pkId}`;
         break;
       case 'Ressources':
-        url = `http://localhost:8000/api/fichiers/?communaute_id=${pkId}`;
+        url = `${domain}/api/fichiers/?communaute_id=${pkId}`;
         break;
       default:
         throw new Error(`Unknown tab: ${tab}`);
@@ -126,7 +127,7 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     } else {
       fetchDataForTab(activeTab);
     }
-  }, [activeTab, community?.pkId, community.description]);
+  }, [activeTab, community?.pkId, community.description, fetchTabData]);
   
   
   const recentActivities: ActivityItemProps[] = [  

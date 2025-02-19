@@ -94,7 +94,7 @@ export default function SignupPage() {
 
     try {
       const response = await fetch(
-        `${domain}/comptes/api/signup/step/${step}/`,
+        `${domain}/comptes/signup/step/${step}/`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -130,7 +130,7 @@ export default function SignupPage() {
           biographie: formData.bio,
         };
 
-        const response = await fetch(`${domain}/comptes/api/signup/step/other/`, {
+        const response = await fetch(`${domain}/comptes/signup/step/other/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newFormData),

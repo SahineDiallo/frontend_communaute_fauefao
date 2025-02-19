@@ -19,6 +19,7 @@ interface CountryOption {
 export default function SignupPage() {
   const [step, setStep] = useState<Step>('basic');
   const [showPassword, setShowPassword] = useState(false);
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [formData, setFormData] = useState({
     username: '',
     first_name: '',
@@ -93,7 +94,7 @@ export default function SignupPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/comptes/api/signup/step/${step}/`,
+        `${domain}/comptes/api/signup/step/${step}/`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -129,7 +130,7 @@ export default function SignupPage() {
           biographie: formData.bio,
         };
 
-        const response = await fetch('http://localhost:8000/comptes/api/signup/step/other/', {
+        const response = await fetch(`${domain}/comptes/api/signup/step/other/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newFormData),

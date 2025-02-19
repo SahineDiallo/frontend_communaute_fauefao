@@ -144,8 +144,8 @@ const CommunityTabContent = () => {
 
   return (
     <>
-      <div className="bg-gray-100 p-4">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="bg-gray-100 md:p-4">
+        <div className="container mx-auto px-1 mt-3 md:mt-0 md:px-6 grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Left Column (col-md-4) */}
           <div className="md:col-span-4 bg-white p-4 shadow">
             <div className="mb-3">

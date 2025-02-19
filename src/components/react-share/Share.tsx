@@ -20,9 +20,8 @@ const SocialShareDropdown = () => {
     <Menu as="div" className="relative inline-block text-right">
       {/* Dropdown Button */}
       <div>
-        <Menu.Button className="inline-flex justify-center bg-[#1f7e60] px-6 py-3 text-sm font-medium text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
-            <ShareIcon className='h-5 w-5 mr-2' />
-            Partager
+        <Menu.Button className="inline-flex justify-center bg-[#1f7e60] p-3 shadow-lg text-sm font-medium text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
+            <ShareIcon className='h-5 w-5' />
         </Menu.Button>
       </div>
 
@@ -36,8 +35,8 @@ const SocialShareDropdown = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="px-1 py-2">
+        <Menu.Items className="absolute z-50 right-0 w-auto mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="px-2 py-2">
             {/* Facebook Share */}
             <Menu.Item>
               {({ active }) => (
@@ -49,7 +48,6 @@ const SocialShareDropdown = () => {
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
                 >
                   <FacebookIcon size={24} round className="mr-2" />
-                  Facebook
                 </FacebookShareButton>
               )}
             </Menu.Item>
@@ -65,7 +63,6 @@ const SocialShareDropdown = () => {
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
                 >
                   <TwitterIcon size={24} round className="mr-2" />
-                  Twitter
                 </TwitterShareButton>
               )}
             </Menu.Item>
@@ -81,7 +78,6 @@ const SocialShareDropdown = () => {
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
                 >
                   <LinkedinIcon size={24} round className="mr-2" />
-                  LinkedIn
                 </LinkedinShareButton>
               )}
             </Menu.Item>
@@ -97,7 +93,6 @@ const SocialShareDropdown = () => {
                   } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
                 >
                   <WhatsappIcon size={24} round className="mr-2" />
-                  WhatsApp
                 </WhatsappShareButton>
               )}
             </Menu.Item>

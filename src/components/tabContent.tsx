@@ -17,8 +17,6 @@ const TabContent = ({
   console.log("onNextPage", onNextPage);
   console.log("onPreviousPage", onPreviousPage);
 
-
-  console.log("data", data)
   if (loading) {
     return <Skeleton />; // Show the Skeleton component while loading
   }

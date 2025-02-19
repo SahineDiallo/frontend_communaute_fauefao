@@ -46,7 +46,7 @@ const ActivationPage: React.FC = () => {
     };
 
     activateUser();
-  }, [uid, token, navigate]);
+  }, [uid, token, navigate, domain]);
 
   if (isLoading) {
     // Display a loading skeleton

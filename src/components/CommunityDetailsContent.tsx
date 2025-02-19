@@ -23,27 +23,7 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
   } | null>(null);
   const [fetchingTab, setFetchingTab] = useState<string | null>(null);
 
-  const fetchTabData = async (tab: string, pkId: string) => {
-    let url = '';
-    switch (tab) {
-      case 'Membres':
-        url = `${domain}/api/community-members/${pkId}/`;
-        break;
-      case 'Discussions':
-        url = `${domain}/api/discussions/?communaute_id=${pkId}`;
-        break;
-      case 'Ressources':
-        url = `${domain}/api/fichiers/?communaute_id=${pkId}`;
-        break;
-      default:
-        throw new Error(`Unknown tab: ${tab}`);
-    }
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
-    }
-    return response.json();
-  };
+
   const handleNextPage = async () => {
     if (!pagination?.next) return;
   
@@ -96,6 +76,27 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     setErrorState(null);
     setPagination(null); 
     setFetchingTab(activeTab);
+    const fetchTabData = async (tab: string, pkId: string) => {
+      let url = '';
+      switch (tab) {
+        case 'Membres':
+          url = `${domain}/api/community-members/${pkId}/`;
+          break;
+        case 'Discussions':
+          url = `${domain}/api/discussions/?communaute_id=${pkId}`;
+          break;
+        case 'Ressources':
+          url = `${domain}/api/fichiers/?communaute_id=${pkId}`;
+          break;
+        default:
+          throw new Error(`Unknown tab: ${tab}`);
+      }
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      return response.json();
+    };
     const fetchDataForTab = async (tab: string) => {
       if (!tab || !community?.pkId) return;
   
@@ -127,7 +128,7 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     } else {
       fetchDataForTab(activeTab);
     }
-  }, [activeTab, community?.pkId, community.description, fetchTabData]);
+  }, [activeTab, community?.pkId, community.description, domain]);
   
   
   const recentActivities: ActivityItemProps[] = [  

@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import { User, Lock, Mail, Building } from 'lucide-react';
-import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import { AuthLayout } from '../AuthLayout';
 import { InputWithIcon } from '../ui/InputWithIcon';
 import authImage from '../../assets/auth_image.jpg';
 import StepIndicator from '../ui/stepIndicator';
+import TextArea from '../ui/Textarea';
 
 type Step = 'basic' | 'security' | 'other';
 
@@ -54,7 +54,8 @@ export default function SignupPage() {
     setErrors((prev) => ({ ...prev, country: { label: '', value: '' } }));
   };
 
-  const handleBioChange = (content: string) => {
+  const handleBioChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const content = event.target.value; // Extract the value from the event
     setFormData((prev) => ({ ...prev, bio: content }));
     setErrors((prev) => ({ ...prev, bio: '' }));
   };
@@ -269,26 +270,13 @@ export default function SignupPage() {
             {step === 'other' && (
               <>
                 <div>
-                  <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
-                    Biographie
-                  </label>
-                  <Editor
-                    apiKey="x4q1m92nzs9uet310vn5o6vqkd7wjkzyvjkugotsyjtsic6c"
-                    init={{
-                      height: 300,
-                      menubar: false,
-                      plugins: [
-                        'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
-                        'insertdatetime media table paste code help wordcount',
-                      ],
-                      toolbar:
-                        'undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help',
-                    }}
+                  <TextArea
+                    id="bio"
+                    label="Biographie"
                     value={formData.bio}
-                    onEditorChange={handleBioChange}
+                    onChange={handleBioChange}
+                    placeholder="Entrer votre Biographie..."
+                    error={errors.bio}
                   />
                   {errors.bio && <p className="mt-1 text-sm text-red-600">{errors.bio}</p>}
                 </div>
@@ -343,7 +331,7 @@ export default function SignupPage() {
           </p>
 
           <p className="mt-8 text-center text-xs text-gray-500">
-            © 2025 Communautés FAUEFAO!
+            © 2025 Communautés FAUEFAO 
           </p>
         </>
       )}

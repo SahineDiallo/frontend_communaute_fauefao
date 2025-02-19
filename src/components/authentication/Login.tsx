@@ -108,7 +108,7 @@ export default function Login() {
       </p>
 
       <p className="mt-8 text-center text-xs text-gray-500">
-        © 2025 Communautés FAUEFAO!
+        © 2025 Communautés FAUEFAO
       </p>
     </AuthLayout>
   );

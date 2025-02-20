@@ -19,6 +19,7 @@ interface CountryOption {
 export default function SignupPage() {
   const [step, setStep] = useState<Step>('basic');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false)
   const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [formData, setFormData] = useState({
     username: '',
@@ -124,31 +125,40 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateStep('other')) {
+      setLoading(true);
       try {
         const newFormData = {
           ...formData,
           country: formData?.country?.value,
           biographie: formData.bio,
         };
-
+  
         const response = await fetch(`${domain}/comptes/signup/step/other/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newFormData),
         });
-
+  
         if (response.ok) {
-          setIsSuccess(true); // Set success state to true
+          setIsSuccess(true);
         } else {
-          const data = await response.json();
-          setErrors(data);
+          const text = await response.text();  // Get raw response
+          try {
+            const data = JSON.parse(text);  // Try parsing JSON
+            setErrors(data);
+          } catch {
+            setErrors({ general: `Unexpected error: ${text}` });  // Log raw response
+          }
         }
       } catch (error) {
         console.error('Error during form submission:', error);
         setErrors({ general: 'Une erreur est survenue, veuillez réessayer plus tard.' });
+      } finally {
+        setLoading(false);
       }
     }
   };
+  
 
   return (
     <AuthLayout imageSrc={authImage} imageAlt="Image communaute de pratique">
@@ -315,7 +325,8 @@ export default function SignupPage() {
               ) : (
                 <button
                   type="submit"
-                  className="ml-auto px-4 py-4 text-sm font-semibold text-white bg-[#EF8450] rounded-none shadow-sm hover:bg-[#EF8450]/90 focus:outline-none focus:ring-2 focus:ring-[#EF8450] focus:ring-offset-2"
+                  disabled={loading}
+                  className="ml-auto px-4 py-4 text-sm font-semibold text-white bg-[#EF8450] disabled:bg-[#EF8450] rounded-none shadow-sm hover:bg-[#EF8450]/90 focus:outline-none focus:ring-2 focus:ring-[#EF8450] focus:ring-offset-2"
                 >
                   S'inscrire
                 </button>

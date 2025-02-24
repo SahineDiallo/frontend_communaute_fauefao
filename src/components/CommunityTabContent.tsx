@@ -168,7 +168,7 @@ const CommunityTabContent = () => {
 
           {/* Right Column (col-md-8) */}
           <div className="md:col-span-8 bg-white p-4 shadow">
-            <h2 className="text-lg font-semibold custom-header">{tab}</h2>
+            <h2 className="text-xl font-medium custom-header">{tab.toUpperCase()}</h2>
             {fetchingTab !== tab ? ( // Only render if the fetching tab matches the active tab
             <Skeleton />
           ) : loadingState ? (

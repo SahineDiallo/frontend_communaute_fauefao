@@ -72,7 +72,7 @@ const MainHeader: React.FC = () => {
             <li key={item.name}>
               <Link
                 to={item.path}
-                className="flex items-center gap-2 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 hover:text-[#ef8450] transition-colors duration-300"
               >
                 <item.icon size={20} />
                 <span>{item.name}</span>
@@ -89,7 +89,7 @@ const MainHeader: React.FC = () => {
                 className="flex items-center space-x-2 focus:outline-none"
               >
                 <img
-                  src={`${domain}${user?.profile.image_url}`}
+                  src={`${domain}/${user?.profile.image_url}`}
                   alt="Profile"
                   className="w-8 h-8 rounded-full"
                 />

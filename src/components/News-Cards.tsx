@@ -17,13 +17,15 @@ interface NewsCardProps {
 export function NewsCard({ pkId, title, description, imageUrl }: NewsCardProps) {
   return (
     <Card className="overflow-hidden rounded-none shadow-none">
-      <div className="relative md:h-64 w-full">
-        <img
-          src={imageUrl}
-          alt={title}
-          className="object-cover h-full"
-        />
-      </div>
+      <Link to={`/communaute-details/${pkId}/a-propos`}>
+        <div className="relative md:h-64 w-full">
+          <img
+            src={imageUrl}
+            alt={title}
+            className="object-cover h-full"
+          />
+        </div>
+      </Link>
 
       <CardHeader className="p-0 mt-2 mb-3">
         {/* {categories && categories.length > 0 && (

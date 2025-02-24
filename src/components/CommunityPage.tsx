@@ -163,6 +163,7 @@ const CommunitiesPage: React.FC = () => {
               featuredCommunity={
                 featuredCommunity
                   ? {
+                      pkId: featuredCommunity.pkId,
                       title: featuredCommunity.nom,
                       description: featuredCommunity.description,
                       imageUrl: featuredCommunity.thumbnail_image,

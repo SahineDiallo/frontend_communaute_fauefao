@@ -10,6 +10,7 @@ export default {
         'custom': ['Inter', 'sans-serif'],
       },
       colors: {
+        customBlue: 'rgb(13, 84, 115)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

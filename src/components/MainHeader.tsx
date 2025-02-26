@@ -7,7 +7,8 @@ import  Logo  from "../assets/logo-fauefao.png"
 import MobileMenu  from "../components/menu/mobile"
 import useAuth from '../hooks/useAuth';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { ChevronDown, LogOut, User } from 'lucide-react';
+import { ChevronDown, LogOut, User,LayoutDashboard } from 'lucide-react';
+
 
 
 const MainHeader:React.FC = () => {
@@ -84,6 +85,15 @@ const MainHeader:React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4" />
                         <span>Profil</span>
+                      </div>
+                    </Link>
+                    <Link
+                      to="/dashbord"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <LayoutDashboard className="w-4 h-4" />
+                        <span>Dashboard</span>
                       </div>
                     </Link>
                     <button

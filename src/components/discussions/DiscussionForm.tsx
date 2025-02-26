@@ -33,7 +33,7 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
   });
   const [errors, setErrors] = useState<Errors>({});
   const { pkId } = useParams<{ pkId: string }>();
-
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const validateForm = () => {
     const newErrors: {titre?: string, contenu?: string}  = {};
     if (!formData.titre) newErrors.titre = 'Un titre est requis';
@@ -87,7 +87,7 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({
     const token = localStorage.getItem("token");
     try {
       // Send data to the backend using fetch
-      const response = await fetch('http://localhost:8000/api/discussions/', {
+      const response = await fetch(`${domain}/api/discussions/`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

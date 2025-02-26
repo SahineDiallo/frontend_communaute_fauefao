@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import { User, Lock, Mail, Building } from 'lucide-react';
-import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import { AuthLayout } from '../AuthLayout';
 import { InputWithIcon } from '../ui/InputWithIcon';
 import authImage from '../../assets/auth_image.jpg';
 import StepIndicator from '../ui/stepIndicator';
+import TextArea from '../ui/Textarea';
 
 type Step = 'basic' | 'security' | 'other';
 
@@ -19,6 +19,8 @@ interface CountryOption {
 export default function SignupPage() {
   const [step, setStep] = useState<Step>('basic');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [formData, setFormData] = useState({
     username: '',
     first_name: '',
@@ -53,7 +55,8 @@ export default function SignupPage() {
     setErrors((prev) => ({ ...prev, country: { label: '', value: '' } }));
   };
 
-  const handleBioChange = (content: string) => {
+  const handleBioChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const content = event.target.value; // Extract the value from the event
     setFormData((prev) => ({ ...prev, bio: content }));
     setErrors((prev) => ({ ...prev, bio: '' }));
   };
@@ -93,7 +96,7 @@ export default function SignupPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/comptes/api/signup/step/${step}/`,
+        `${domain}/comptes/signup/step/${step}/`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -122,31 +125,40 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateStep('other')) {
+      setLoading(true);
       try {
         const newFormData = {
           ...formData,
           country: formData?.country?.value,
           biographie: formData.bio,
         };
-
-        const response = await fetch('http://localhost:8000/comptes/api/signup/step/other/', {
+  
+        const response = await fetch(`${domain}/comptes/signup/step/other/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newFormData),
         });
-
+  
         if (response.ok) {
-          setIsSuccess(true); // Set success state to true
+          setIsSuccess(true);
         } else {
-          const data = await response.json();
-          setErrors(data);
+          const text = await response.text();  // Get raw response
+          try {
+            const data = JSON.parse(text);  // Try parsing JSON
+            setErrors(data);
+          } catch {
+            setErrors({ general: `Unexpected error: ${text}` });  // Log raw response
+          }
         }
       } catch (error) {
         console.error('Error during form submission:', error);
         setErrors({ general: 'Une erreur est survenue, veuillez réessayer plus tard.' });
+      } finally {
+        setLoading(false);
       }
     }
   };
+  
 
   return (
     <AuthLayout imageSrc={authImage} imageAlt="Image communaute de pratique">
@@ -268,26 +280,13 @@ export default function SignupPage() {
             {step === 'other' && (
               <>
                 <div>
-                  <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
-                    Biographie
-                  </label>
-                  <Editor
-                    apiKey="x4q1m92nzs9uet310vn5o6vqkd7wjkzyvjkugotsyjtsic6c"
-                    init={{
-                      height: 300,
-                      menubar: false,
-                      plugins: [
-                        'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
-                        'insertdatetime media table paste code help wordcount',
-                      ],
-                      toolbar:
-                        'undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | help',
-                    }}
+                  <TextArea
+                    id="bio"
+                    label="Biographie"
                     value={formData.bio}
-                    onEditorChange={handleBioChange}
+                    onChange={handleBioChange}
+                    placeholder="Entrer votre Biographie..."
+                    error={errors.bio}
                   />
                   {errors.bio && <p className="mt-1 text-sm text-red-600">{errors.bio}</p>}
                 </div>
@@ -326,7 +325,8 @@ export default function SignupPage() {
               ) : (
                 <button
                   type="submit"
-                  className="ml-auto px-4 py-4 text-sm font-semibold text-white bg-[#EF8450] rounded-none shadow-sm hover:bg-[#EF8450]/90 focus:outline-none focus:ring-2 focus:ring-[#EF8450] focus:ring-offset-2"
+                  disabled={loading}
+                  className="ml-auto px-4 py-4 text-sm font-semibold text-white bg-[#EF8450] disabled:bg-[#EF8450] rounded-none shadow-sm hover:bg-[#EF8450]/90 focus:outline-none focus:ring-2 focus:ring-[#EF8450] focus:ring-offset-2"
                 >
                   S'inscrire
                 </button>
@@ -342,7 +342,7 @@ export default function SignupPage() {
           </p>
 
           <p className="mt-8 text-center text-xs text-gray-500">
-            © 2025 Communautés FAUEFAO!
+            © 2025 Communautés FAUEFAO 
           </p>
         </>
       )}

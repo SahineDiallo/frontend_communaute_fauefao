@@ -198,7 +198,7 @@ export default function AuthForm({ type }: AuthFormProps) {
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-900">{getTitle()}</h1>
         <p className="mt-2 text-sm text-gray-600">
-          {type === 'login' ? 'Connectez-vous pour continuer sur MJ Business!' : ''}
+          {type === 'login' ? 'Connectez-vous pour continuer' : ''}
         </p>
       </div>
 

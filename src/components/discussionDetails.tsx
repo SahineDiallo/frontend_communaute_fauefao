@@ -171,7 +171,6 @@ const PostDetails = () => {
                       key={i}
                       user={activity.user}
                       action={activity.action}
-                      timestamp={activity.timestamp}
                       discussion={activity?.discussion}
                       fichier={activity?.fichier}
                       community={activity.community}

@@ -24,16 +24,17 @@ const CommunityTabContent = () => {
   const { data: community } = useAppSelector((state) => state.communityDetails);
 
   const fetchTabData = async (tab: string, pkId: string) => {
+    const domain = import.meta.env.VITE_MAIN_DOMAIN;
     let url = '';
     switch (tab) {
       case 'membres':
-        url = `http://localhost:8000/api/community-members/${pkId}/`;
+        url = `${domain}/api/community-members/${pkId}/`;
         break;
       case 'discussions':
-        url = `http://localhost:8000/api/discussions/?communaute_id=${pkId}`;
+        url = `${domain}/api/discussions/?communaute_id=${pkId}`;
         break;
       case 'ressources':
-        url = `http://localhost:8000/api/fichiers/?communaute_id=${pkId}`;
+        url = `${domain}/api/fichiers/?communaute_id=${pkId}`;
         break;
       default:
         throw new Error(`Unknown tab: ${tab}`);
@@ -143,8 +144,8 @@ const CommunityTabContent = () => {
 
   return (
     <>
-      <div className="bg-gray-100 p-4">
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="bg-gray-100 md:p-4">
+        <div className="container mx-auto px-1 mt-3 md:mt-0 md:px-6 grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Left Column (col-md-4) */}
           <div className="md:col-span-4 bg-white p-4 shadow">
             <div className="mb-3">
@@ -154,7 +155,6 @@ const CommunityTabContent = () => {
                   key={i}
                   user={activity.user}
                   action={activity.action}
-                  timestamp={activity.timestamp}
                   discussion={activity?.discussion}
                   fichier={activity?.fichier}
                   community={activity.community}
@@ -168,7 +168,7 @@ const CommunityTabContent = () => {
 
           {/* Right Column (col-md-8) */}
           <div className="md:col-span-8 bg-white p-4 shadow">
-            <h2 className="text-lg font-semibold custom-header">{tab}</h2>
+            <h2 className="text-xl font-medium custom-header">{tab.toUpperCase()}</h2>
             {fetchingTab !== tab ? ( // Only render if the fetching tab matches the active tab
             <Skeleton />
           ) : loadingState ? (

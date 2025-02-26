@@ -17,8 +17,6 @@ const TabContent = ({
   console.log("onNextPage", onNextPage);
   console.log("onPreviousPage", onPreviousPage);
 
-
-  console.log("data", data)
   if (loading) {
     return <Skeleton />; // Show the Skeleton component while loading
   }
@@ -92,7 +90,7 @@ const TabContent = ({
                 pkId={file.pkId}
               />
             )) : (
-              <p>Pas de discussions trouvées</p>
+              <p>Pas de ressources trouvées</p>
             )
             }
           </ul>

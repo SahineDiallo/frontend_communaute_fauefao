@@ -54,6 +54,7 @@ interface RichTextEditorProps {
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTempFileUpload, textOnly = false }) => {
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [uploading, setUploading] = useState(false);
 
 
@@ -130,7 +131,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
       const formData = new FormData();
       formData.append('file', file);
   
-      const response = await fetch('http://localhost:8000/api/upload-file/', {
+      const response = await fetch(`${domain}/api/upload-file/`, {
         method: 'POST',
         body: formData,
       });

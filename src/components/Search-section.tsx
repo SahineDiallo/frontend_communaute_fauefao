@@ -91,7 +91,7 @@ export function ReusableFilter({ categories, initialFilters, onFilterChange }: R
       <div className="relative flex-1">
         <Input
           type="text"
-          placeholder="Search ...."
+          placeholder="Recherche ...."
           className="pl-4"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)} 
@@ -107,7 +107,7 @@ export function ReusableFilter({ categories, initialFilters, onFilterChange }: R
           <SelectValue placeholder="All Types" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
+          <SelectItem value="all">Tous les types</SelectItem>
         </SelectContent>
       </Select>
       <Select value={selectedCategory} onValueChange={handleCategoryChange}>
@@ -115,7 +115,7 @@ export function ReusableFilter({ categories, initialFilters, onFilterChange }: R
           <SelectValue placeholder="All Categories" />
         </SelectTrigger>
         <SelectContent className="bg-white">
-          <SelectItem value="all">All Categories</SelectItem>
+          <SelectItem value="all">Toutes les Categories</SelectItem>
           {categories.map((category) => (
             <SelectItem key={category.pkId || category.nom} value={category.nom}>
               {category.nom}

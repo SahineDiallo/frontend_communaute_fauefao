@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // communitiesSlice.ts
 import { createSlice, createAsyncThunk,  PayloadAction } from '@reduxjs/toolkit';
 import { Community } from '../../../types';
@@ -46,7 +46,7 @@ export const fetchCommunities = createAsyncThunk<Community[]>(
 // New thunk for fetching filtered communities
 export const fetchFilteredCommunities = createAsyncThunk<Community[], FilterParams>(
   'communities/fetchFilteredCommunities',
-  async (filters, thunkAPI) => {
+  async (filters) => {
     // If filters is not provided, default to safe values
     if (!filters) {
       filters = { query: '', type: 'all', category: 'all' };

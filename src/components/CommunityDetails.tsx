@@ -39,7 +39,7 @@ const CommunityDetails = () => {
           </div>
         </div>
       </div>
-      <div className="communaute-header-info container w-full mx-auto px-2 md:px-8 py-2 md:py-4">
+      <div className="communaute-header-info container w-full mx-auto px-1 md:px-8 py-2 md:py-4">
         <div className="border-b-2 border-gray-100 pb-4">
           <h1 className="h1">{community.nom}</h1>
           <span className="text-gray-500">

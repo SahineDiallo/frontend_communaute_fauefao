@@ -1,10 +1,10 @@
-import { formatDate } from "../lib/utils";
+import { Link } from "react-router-dom";
 import { ActivityFeed } from "./ActivityFeed";
 import { ActivityItem } from "./ActivityFeed"; // Import the ActivityItem type
 import { Card, CardContent } from "./ui/card";
 
 export interface FeaturedArticleProps {
-  date: string;
+  pkId: string;
   title: string;
   description: string;
   imageUrl: string;
@@ -22,18 +22,19 @@ export function FeaturedSection({ featuredCommunity, activities }: FeaturedSecti
       <div className="md:col-span-2">
         <Card className="overflow-hidden rounded-none">
           <div className="relative aspect-[16/10] md:aspect-[16/9]">
+          <Link to={`/communaute-details/${featuredCommunity?.pkId}/a-propos`}>
             <img
               src={featuredCommunity?.imageUrl}
               alt={featuredCommunity?.title}
               className="object-cover w-full h-full"
             />
+            </Link>
           </div>
           <CardContent className="px-0 py-4">
-            <div className="text-sm text-muted-foreground mb-2">
-              {featuredCommunity?.date && formatDate(featuredCommunity.date)}
-            </div>
-            <h2 className="text-2xl font-semibold mb-3">{featuredCommunity?.title}</h2>
-            <p className="text-muted-foreground line-clamp-2">{featuredCommunity?.description}</p>
+            <Link to={`/communaute-details/${featuredCommunity?.pkId}/a-propos`}>
+              <h2 className="text-2xl font-semibold mb-3">{featuredCommunity?.title}</h2>
+            </Link>
+            <p className="text-muted-foreground line-clamp-3">{featuredCommunity?.description}</p>
           </CardContent>
         </Card>
       </div>

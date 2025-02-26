@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 const ActivationPage: React.FC = () => {
   const { uid, token } = useParams<{ uid: string; token: string }>();
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
@@ -16,7 +17,7 @@ const ActivationPage: React.FC = () => {
         hasActivated.current = true;
         try {
           // Send activation request to Djoser using fetch
-          const response = await fetch('http://localhost:8000/api/v1/auth/users/activation/', {
+          const response = await fetch(`${domain}/api/v1/auth/users/activation/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const ActivationPage: React.FC = () => {
     };
 
     activateUser();
-  }, [uid, token, navigate]);
+  }, [uid, token, navigate, domain]);
 
   if (isLoading) {
     // Display a loading skeleton

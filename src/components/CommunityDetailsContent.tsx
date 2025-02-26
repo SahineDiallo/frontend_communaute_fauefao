@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { selectActiveTab } from '../store/features/tabs/tabsSelectors';
 import Skeleton from './skeleton/Skeleton';
-import { Community } from '../types';
+import { ActivityItemProps, Community } from '../types';
 import { ActivityItem } from './ActivityItem';
 import TabContent from './tabContent';
 
@@ -13,6 +13,7 @@ interface CommunityDetailContentProps {
 const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
   const activeTab = useAppSelector(selectActiveTab);
   const [communityData, setCommunityData] = useState<string | null>(null);
+  const domain = import.meta.env.VITE_MAIN_DOMAIN
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [errorState, setErrorState] = useState<string | null>(null);
   const [pagination, setPagination] = useState<{
@@ -22,27 +23,7 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
   } | null>(null);
   const [fetchingTab, setFetchingTab] = useState<string | null>(null);
 
-  const fetchTabData = async (tab: string, pkId: string) => {
-    let url = '';
-    switch (tab) {
-      case 'Membres':
-        url = `http://localhost:8000/api/community-members/${pkId}/`;
-        break;
-      case 'Discussions':
-        url = `http://localhost:8000/api/discussions/?communaute_id=${pkId}`;
-        break;
-      case 'Ressources':
-        url = `http://localhost:8000/api/fichiers/?communaute_id=${pkId}`;
-        break;
-      default:
-        throw new Error(`Unknown tab: ${tab}`);
-    }
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
-    }
-    return response.json();
-  };
+
   const handleNextPage = async () => {
     if (!pagination?.next) return;
   
@@ -95,6 +76,27 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     setErrorState(null);
     setPagination(null); 
     setFetchingTab(activeTab);
+    const fetchTabData = async (tab: string, pkId: string) => {
+      let url = '';
+      switch (tab) {
+        case 'Membres':
+          url = `${domain}/api/community-members/${pkId}/`;
+          break;
+        case 'Discussions':
+          url = `${domain}/api/discussions/?communaute_id=${pkId}`;
+          break;
+        case 'Ressources':
+          url = `${domain}/api/fichiers/?communaute_id=${pkId}`;
+          break;
+        default:
+          throw new Error(`Unknown tab: ${tab}`);
+      }
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      return response.json();
+    };
     const fetchDataForTab = async (tab: string) => {
       if (!tab || !community?.pkId) return;
   
@@ -126,21 +128,11 @@ const CommunityDetailContent = ({ community }: CommunityDetailContentProps) => {
     } else {
       fetchDataForTab(activeTab);
     }
-  }, [activeTab, community?.pkId, community.description]);
+  }, [activeTab, community?.pkId, community.description, domain]);
   
   
-  const recentActivities = [  
-    {
-      user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-      action: "added a Community document",
-      date: "25/07/2023 - 11:20",
-    },
-    {user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-    action: "added a Community document",
-    date: "25/07/2023 - 11:20",},
-    {user: { name: "Clara Ceravolo", image: "/placeholder.svg" },
-    action: "added a Community document",
-    date: "25/07/2023 - 11:20",}
+  const recentActivities: ActivityItemProps[] = [  
+
 
   ]
 

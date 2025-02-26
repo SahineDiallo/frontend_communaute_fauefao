@@ -6,6 +6,7 @@ import { Button } from "../ui/Button";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/Accordion";
 import { HeroSection } from "../home/Hero-section";
+import { CountrySelect } from "../ui/SelectButton";
 
 export default function RechercheMembre() {
   return (
@@ -42,43 +43,31 @@ export default function RechercheMembre() {
               </div>
 
               <div className="border-t border-[#ef8450] pt-6">
-                <h3 className="text-xl font-semibold mb-4">Filtres</h3>
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="social-protection">
-                    <AccordionTrigger className="text-[#ef8450]">
-                      Programmes de protection sociale
-                    </AccordionTrigger>
-                    <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="topics">
-                    <AccordionTrigger className="text-[#ef8450]">
-                      Thèmes de protection sociale
-                    </AccordionTrigger>
-                    <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="crosscutting">
-                    <AccordionTrigger className="text-[#ef8450]">
-                      Domaines transversaux
-                    </AccordionTrigger>
-                    <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="position">
-                    <AccordionTrigger className="text-[#ef8450]">
-                      Poste professionnel
-                    </AccordionTrigger>
-                    <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="regions">
-                    <AccordionTrigger className="text-[#ef8450]">
-                      Régions d'intérêt
-                    </AccordionTrigger>
-                    <AccordionContent>{/* Contenu des filtres */}</AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                  <h3 className="text-xl font-semibold mb-4">Filtres</h3>
+                  <Accordion type="multiple" className="w-full">
+                  <AccordionItem value="types">
+                          <AccordionTrigger className="text-[#ef8450]">
+                              Institutions
+                          </AccordionTrigger>
+                          <AccordionContent>
+                              {/* Checkbox List */}
+                              <div className="space-y-2">
+                              
+                              </div>
+                          </AccordionContent>
+                      </AccordionItem>
+                      {/* Countries Filter */}
+                      <AccordionItem value="countries">
+                      <AccordionTrigger className="text-[#ef8450]">
+                          Pays
+                      </AccordionTrigger>
+                      <AccordionContent>
+                          {/* Dropdown for Countries */}
+                          <CountrySelect />
+                      </AccordionContent>
+                      </AccordionItem>
+                      
+                  </Accordion>
               </div>
             </div>
           </div>

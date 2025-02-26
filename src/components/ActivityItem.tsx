@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { formatIsoDate } from "../lib/utils";
 import { ActivityItemProps } from "../types";
 
 const ACTION_TRANSLATIONS: { [key: string]: string } = {
@@ -10,7 +9,6 @@ const ACTION_TRANSLATIONS: { [key: string]: string } = {
 export function ActivityItem({
   user,
   action,
-  timestamp,
   discussion,
   fichier,
   community
@@ -83,7 +81,6 @@ export function ActivityItem({
           <span className="font-medium text-orange-500">{user.full_name}</span>{" "}
           {activityMessage}
         </p>
-        <p className="text-xs text-muted-foreground">{formatIsoDate(timestamp)}</p>
       </div>
     </div>
   );

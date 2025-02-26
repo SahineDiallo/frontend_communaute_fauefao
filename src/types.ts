@@ -96,7 +96,6 @@ export interface TabContentProps {
 export interface ActivityItemProps {
   user: User
   action: string
-  timestamp: string
   discussion?: Discussion
   fichier?: File
   community: Community

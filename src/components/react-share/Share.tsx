@@ -17,7 +17,7 @@ const SocialShareDropdown = () => {
   const pageTitle = document.title;
 
   return (
-    <Menu as="div" className="relative inline-block text-right">
+    <Menu as="div" className="fixed top-[55%] right-1 transform -translate-y-1/2 z-50">
       {/* Dropdown Button */}
       <div>
         <Menu.Button className="inline-flex justify-center bg-[#1f7e60] p-3 shadow-lg text-sm font-medium text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
@@ -25,7 +25,7 @@ const SocialShareDropdown = () => {
         </Menu.Button>
       </div>
 
-      {/* Dropdown Items */}
+      {/* Dropdown Items (proche du bouton) */}
       <Transition
         as={Fragment}
         enter="transition ease-out duration-100"
@@ -44,53 +44,53 @@ const SocialShareDropdown = () => {
                   url={currentPageUrl}
                   title={pageTitle}
                   className={`${
-                    active ? 'bg-indigo-500 text-white' : 'text-gray-900'
-                  } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
+                    active ? 'bg-green-500 text-white' : 'text-gray-900'
+                  } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                 >
                   <FacebookIcon size={24} round className="mr-2" />
                 </FacebookShareButton>
               )}
             </Menu.Item>
 
-            {/* Twitter Share */}
+            {/* Twitter */}
             <Menu.Item>
               {({ active }) => (
                 <TwitterShareButton
                   url={currentPageUrl}
                   title={pageTitle}
                   className={`${
-                    active ? 'bg-indigo-500 text-white' : 'text-gray-900'
-                  } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
+                    active ? 'bg-green-500 text-white' : 'text-gray-900'
+                  } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                 >
                   <TwitterIcon size={24} round className="mr-2" />
                 </TwitterShareButton>
               )}
             </Menu.Item>
 
-            {/* LinkedIn Share */}
+            {/* LinkedIn */}
             <Menu.Item>
               {({ active }) => (
                 <LinkedinShareButton
                   url={currentPageUrl}
                   title={pageTitle}
                   className={`${
-                    active ? 'bg-indigo-500 text-white' : 'text-gray-900'
-                  } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
+                    active ? 'bg-green-500 text-white' : 'text-gray-900'
+                  } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                 >
                   <LinkedinIcon size={24} round className="mr-2" />
                 </LinkedinShareButton>
               )}
             </Menu.Item>
 
-            {/* WhatsApp Share */}
+            {/* WhatsApp */}
             <Menu.Item>
               {({ active }) => (
                 <WhatsappShareButton
                   url={currentPageUrl}
                   title={pageTitle}
                   className={`${
-                    active ? 'bg-indigo-500 text-white' : 'text-gray-900'
-                  } group flex rounded-md items-center w-full px-2 py-2 text-sm mb-3`}
+                    active ? 'bg-green-500 text-white' : 'text-gray-900'
+                  } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                 >
                   <WhatsappIcon size={24} round className="mr-2" />
                 </WhatsappShareButton>

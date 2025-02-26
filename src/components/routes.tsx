@@ -6,13 +6,15 @@ import PasswordReset from './authentication/Forgot-Password';
 import PasswordChange from './authentication/Change-Password';
 import ProtectedRoute from './ProtectedRoute';
 import CommunitiesPage from "./CommunityPage";
-import CommunityDetails from "./CommunityDetails";
+import CommunityDetails from './CommunityDetails';
 import Layout from './Layout';
 import ActivationPage from './pages/ActivationPage';
 import PostDetails from './discussionDetails';
 import CommunityTabContent from './CommunityTabContent';
 import MemberSearch from './pages/AllMembers';
 import StakeholderSearch from './pages/Institutions';
+import AdminDashboard from './pages/Dashboard';
+import AddCommunityForm from './pages/AddCommunity';
 
 const AppRoutes: React.FC  = () => {
   return (
@@ -23,6 +25,13 @@ const AppRoutes: React.FC  = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<PasswordReset />} />
       <Route path="/password-change" element={<PasswordChange />} />
+
+      {/* All dashboard routerss */}
+      <Route path="/dashbord" element={<AdminDashboard />} />
+      
+      <Route path="/add-community" element={<AddCommunityForm />} />
+
+      
       <Route element={<Layout />}>
         <Route path="/" element={<CommunitiesPage />} />
         <Route path="/all-members" element={<MemberSearch />} />

@@ -11,6 +11,8 @@ import FichierForm from './forms/FichierForm';
 import { logout } from '../store/features/auth/authSlice';
 import useAuth from '../hooks/useAuth';
 
+
+
 interface MenuPageDetailProps {
   MenuItems: {
     name: string;
@@ -184,6 +186,9 @@ const MenuPageDetail: React.FC<MenuPageDetailProps> = ({ MenuItems, communityPkI
 
   return (
     <div>
+
+    
+
       {/* Menu Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between px-0 pt-2 space-y-4 md:space-y-0">
         {/* Menu Items */}

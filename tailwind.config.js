@@ -11,6 +11,7 @@ export default {
       },
       colors: {
         customBlue: 'rgb(13, 84, 115)',
+        primary: 'rgb(239, 132, 80)', // primary color
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

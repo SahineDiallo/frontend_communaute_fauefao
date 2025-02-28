@@ -20,11 +20,12 @@ import {
   Image as ImageIcon,
   Youtube as YoutubeIcon,
   Quote,
-  // CodeSquare,
   Minus,
-  Paperclip, // Add the Paperclip icon for "Attach File"
+  Paperclip,
 } from 'lucide-react';
-import '../ui/richtext.css'; // Ensure this CSS file is correctly imported
+// import UploadProgress from './UploadProgress';
+import '../ui/richtext.css';
+import UploadProgress from './UploadProgress';
 
 // Custom Image Extension
 const CustomImage = Image.extend({
@@ -47,16 +48,22 @@ const CustomImage = Image.extend({
 });
 
 interface RichTextEditorProps {
-  content: string; // The content of the editor (HTML string)
-  onChange: (content: string) => void; // Callback for when the content changes
-  onTempFileUpload?: (tempFilePath: string) => void; // Callback for temporary file uploads (optional)
-  textOnly?: boolean;
+  content: string; // Le contenu de l'éditeur (HTML string)
+  onChange: (content: string) => void; // Callback pour les changements de contenu
+  onTempFileUpload?: (tempFilePath: string) => void; // Callback pour les uploads de fichiers temporaires (optionnel)
+  textOnly?: boolean; // Mode texte uniquement (optionnel)
+}
+
+interface Upload {
+  id: string; // Identifiant unique pour chaque upload
+  file: File; // Fichier en cours d'upload
+  progress: number; // Progression de l'upload (0 à 100)
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTempFileUpload, textOnly = false }) => {
-  const domain = import.meta.env.VITE_MAIN_DOMAIN
-  const [uploading, setUploading] = useState(false);
-
+  const domain = import.meta.env.VITE_MAIN_DOMAIN; // Domaine pour les uploads
+  const [uploads, setUploads] = useState<Upload[]>([]); // État pour gérer les uploads en cours
+  // const [tempFiles, setTempFiles] = useState<string[]>([]); // État pour gérer les fichiers temporaires
 
   const editor = useEditor({
     extensions: [
@@ -66,15 +73,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
         },
       }),
       Underline,
-      CustomImage, // Use the custom image extension
+      CustomImage, // Utilisez l'extension d'image personnalisée
       Link.configure({
-        openOnClick: true, // Allow links to be clickable
+        openOnClick: true, // Permettre aux liens d'être cliquables
         HTMLAttributes: {
-          target: '_blank', // Open links in a new tab
-          rel: 'noopener noreferrer', // Security attributes
+          target: '_blank', // Ouvrir les liens dans un nouvel onglet
+          rel: 'noopener noreferrer', // Attributs de sécurité
         },
         validate: (href) => {
-          // Ensure the URL is absolute (starts with http:// or https://)
+          // S'assurer que l'URL est absolue (commence par http:// ou https://)
           return /^https?:\/\//.test(href);
         },
       }),
@@ -83,13 +90,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
         controls: true,
         width: 640,
         height: 480,
-        nocookie: true
+        nocookie: true,
       }),
     ],
     content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      onChange(html); // Pass the updated content to the parent component
+      onChange(html); // Passer le contenu mis à jour au composant parent
     },
     editorProps: {
       attributes: {
@@ -97,12 +104,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
       },
       handlePaste: (view, event: ClipboardEvent) => {
         const clipboardData = event.clipboardData;
-        if (!clipboardData) return false
+        if (!clipboardData) return false;
         const items = clipboardData.items;
         for (const item of items) {
           if (item.type.indexOf('image') === 0) {
             const file = item.getAsFile();
-            if (file) { // Check if file is not null
+            if (file) {
               handleFileUpload(file, view.state.selection.anchor);
               return true;
             }
@@ -122,97 +129,130 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
         }
         return false;
       },
+
+
+      
     },
   });
 
-  const handleFileUpload = async (file: File, position: number) => {
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
+  const handleFileUpload = (file: File, position: number) => {
+    const uploadId = Date.now().toString(); // Identifiant unique pour l'upload
+    const newUpload: Upload = {
+      id: uploadId,
+      file,
+      progress: 0,
+    };
   
-      const response = await fetch(`${domain}/api/upload-file/`, {
-        method: 'POST',
-        body: formData,
-      });
+    // Ajouter l'upload à la liste des uploads en cours
+    setUploads((prevUploads) => [...prevUploads, newUpload]);
   
-      if (!response.ok) {
-        throw new Error('Failed to upload file');
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    const xhr = new XMLHttpRequest();
+  
+    // Suivre la progression de l'upload
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) {
+        const progress = Math.round((event.loaded / event.total) * 100);
+        setUploads((prevUploads) =>
+          prevUploads.map((upload) =>
+            upload.id === uploadId ? { ...upload, progress } : upload
+          )
+        );
       }
+    });
   
-      const data = await response.json();
-      const tempFilePath = data.fileUrl; // Temporary file path
-      const fileName = data.fileName; // File name
-      const fileId = data.fichierId
-      console.log("here is the file tempFilePath", tempFilePath);
+    // Gérer la réponse après l'upload
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const data = JSON.parse(xhr.responseText);
+        const tempFilePath = data.fileUrl; // URL temporaire du fichier
+        const fileName = data.fileName; // Nom du fichier
+        const fileId = data.fichierId; // ID du fichier
   
-      // Store the temporary file path in state
-      if (onTempFileUpload) {
-        onTempFileUpload(fileId);
-      }
+        
+        if (onTempFileUpload) {
+          onTempFileUpload(fileId);
+        }
   
-      if (file.type.startsWith('image/')) {
-        // Handle image files: display the image directly
-        editor
-          ?.chain()
-          .insertContentAt(position, {
-            type: 'image',
-            attrs: {
-              id: 'uploadIMG',
-              class: 'uploadIMG',
-              src: tempFilePath, // Use the temporary file path
-            },
-          })
-          .focus()
-          .run();
-      } else {
-        // Handle non-image files: display the file name as a clickable link
-        editor
-          ?.chain()
-          .insertContentAt(position, {
-            type: 'text',
-            text: fileName, // Use the file name
-            marks: [
-              {
-                type: 'link',
-                attrs: {
-                  href: tempFilePath, // Use the temporary file path as the link
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                },
+        if (file.type.startsWith('image/')) {
+          // Insérer une image dans l'éditeur
+          editor
+            ?.chain()
+            .insertContentAt(position, {
+              type: 'image',
+              attrs: {
+                id: 'uploadIMG',
+                class: 'uploadIMG',
+                src: tempFilePath,
               },
-            ],
-          })
-          .focus()
-          .run();
+            })
+            .focus()
+            .run();
+        } else {
+          // Insérer un lien vers le fichier dans l'éditeur
+          editor
+            ?.chain()
+            .insertContentAt(position, {
+              type: 'text',
+              text: fileName,
+              marks: [
+                {
+                  type: 'link',
+                  attrs: {
+                    href: tempFilePath,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  },
+                },
+              ],
+            })
+            .focus()
+            .run();
+        }
+      } else {
+        console.error('Failed to upload file:', xhr.statusText);
       }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    } finally {
-      setUploading(false);
-    }
+  
+      // Retirer l'upload de la liste une fois terminé
+      setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
+    };
+  
+    // Gérer les erreurs
+    xhr.onerror = () => {
+      console.error('Error uploading file:', xhr.statusText);
+      setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
+    };
+  
+    // Envoyer la requête
+    xhr.open('POST', `${domain}/api/upload-file/`, true);
+    xhr.send(formData);
   };
+
+ 
 
   const handleImageUploadClick = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
     input.onchange = (event: Event) => {
-      const file = (event.target as HTMLInputElement).files?.[0]; // Narrow down the type
+      const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
-        handleFileUpload(file, editor?.state.selection.anchor || 0); // Handle the file
+        handleFileUpload(file, editor?.state.selection.anchor || 0);
       }
     };
     input.click();
   };
+
   const handleFileUploadClick = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '*/*'; // Allow all file types
+    input.accept = '*/*';
     input.onchange = (event) => {
-      const file = (event.target as HTMLInputElement).files?.[0]; // Narrow down the type
+      const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
-        handleFileUpload(file, editor?.state.selection.anchor || 0); // Handle the file
+        handleFileUpload(file, editor?.state.selection.anchor || 0);
       }
     };
     input.click();
@@ -221,7 +261,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
   const addYoutubeVideo = () => {
     const url = prompt('Veuillez entrer le lien YouTube');
     if (url) {
-      console.log("Here is the URL:", url);
       const videoId = extractYoutubeId(url);
       if (videoId) {
         const embedUrl = `https://www.youtube.com/embed/${videoId}`;
@@ -231,7 +270,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
       }
     }
   };
-  
+
   function extractYoutubeId(url: string): string {
     const videoIdMatch = url.match(
       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
@@ -242,28 +281,23 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
   const setLink = () => {
     const previousUrl = editor?.getAttributes('link').href;
     const url = window.prompt('URL', previousUrl);
-  
-    // Cancelled
+
     if (url === null) {
       return;
     }
-  
-    // Empty
+
     if (url === '') {
       editor?.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
-  
-    // Add https if no protocol is specified
+
     const validUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
-  
-    // Validate the URL
+
     if (!/^https?:\/\/\S+$/.test(validUrl)) {
-      alert('Please enter a valid URL.');
+      alert('Veuillez entrer une URL valide.');
       return;
     }
-  
-    // Set the link with the validated URL
+
     editor
       ?.chain()
       .focus()
@@ -278,9 +312,21 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
 
   return (
     <div className="rich-text-editor">
+      {/* Barres de progression en haut du composant */}
+      <div className="bg-white p-4 shadow-md">
+        {uploads.map((upload) => (
+          <div key={upload.id} className="mb-2">
+            <UploadProgress value={upload.progress} className="h-2" />
+            <p className="text-sm text-muted-foreground mt-1">
+              {upload.progress}% completed - {upload.file.name}
+            </p>
+          </div>
+        ))}
+      </div>
+
       {/* Toolbar */}
       <div className="toolbar">
-        {/* Text Formatting */}
+        {/* Boutons de formatage de texte */}
         <button
           type="button"
           onClick={() => editor?.chain().focus().toggleBold().run()}
@@ -317,7 +363,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
           <Code size={20} />
         </button>
 
-        {/* Headings */}
+        {/* Boutons pour les titres */}
         <button
           type="button"
           onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -340,7 +386,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
           <Heading3 size={20} />
         </button>
 
-        {/* Lists */}
+        {/* Boutons pour les listes */}
         <button
           type="button"
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
@@ -356,17 +402,16 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
           <ListOrdered size={20} />
         </button>
 
-        {/* Links and Images */}
+        {/* Boutons pour les liens et images */}
         <button type="button" onClick={setLink}>
           <LinkIcon size={20} />
         </button>
-        {/* Conditionally render image, file upload, and YouTube buttons */}
         {!textOnly && (
           <>
-            <button type="button" onClick={handleImageUploadClick} disabled={uploading}>
+            <button type="button" onClick={handleImageUploadClick} disabled={uploads.length > 0}>
               <ImageIcon size={20} />
             </button>
-            <button type="button" onClick={handleFileUploadClick} disabled={uploading}>
+            <button type="button" onClick={handleFileUploadClick} disabled={uploads.length > 0}>
               <Paperclip size={20} />
             </button>
             <button type="button" onClick={addYoutubeVideo}>
@@ -375,34 +420,27 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
           </>
         )}
 
-        {/* Attach File */}
-        <button type="button" onClick={handleFileUploadClick} disabled={uploading}>
+        {/* Bouton pour les fichiers */}
+        <button type="button" onClick={handleFileUploadClick} disabled={uploads.length > 0}>
           <Paperclip size={20} />
         </button>
 
-
-        {/* Blockquotes and Code Blocks */}
+        {/* Bouton pour les citations */}
         <button
-        type="button"
+          type="button"
           onClick={() => editor?.chain().focus().toggleBlockquote().run()}
           className={editor?.isActive('blockquote') ? 'is-active' : ''}
         >
           <Quote size={20} />
         </button>
-        {/* <button
-          onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-          className={editor?.isActive('codeBlock') ? 'is-active' : ''}
-        >
-          <CodeSquare size={20} />
-        </button> */}
 
-        {/* Horizontal Rule */}
+        {/* Bouton pour la ligne horizontale */}
         <button type="button" onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
           <Minus size={20} />
         </button>
       </div>
 
-      {/* Editor Content */}
+      {/* Contenu de l'éditeur */}
       <div className="editor-content prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc">
         <EditorContent editor={editor} />
       </div>

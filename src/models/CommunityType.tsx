@@ -1,4 +1,5 @@
 import { UUID } from "crypto";
+import { Membership } from "../types";
 
 
 
@@ -29,5 +30,25 @@ export interface Communaute {
   createdAt?: Date;
   updatedAt?: Date;
   members: number;
+  // Ajouter d'autres champs optionnels selon les besoins
+}
+
+
+export interface CommunauteDetails {
+  pkId: UUID;
+  nom: string;
+  categories: Category[];
+  members: Membership[];
+  discussions: Discussion[];
+  // Ajouter d'autres champs optionnels selon les besoins
+}
+
+
+export interface CommunauteDetailsCount {
+
+  ressources: number,
+  institutions: number,
+  membres: number
+  discussions: number;
   // Ajouter d'autres champs optionnels selon les besoins
 }

@@ -4,6 +4,10 @@ import { Users, Handshake, FileText, Globe } from "lucide-react" // Importez les
 import { Link } from 'react-router-dom';
 import { useAppSelector } from "../hooks/useAppSelector";
 import { RootState } from "../store/store";
+import { useState, useEffect } from 'react';
+import {  CommunauteDetailsCount } from "../models/CommunityType";
+
+import { fetchCommunauteDetailsCount } from "../services/CommunityServices";
 
 
 
@@ -25,8 +29,27 @@ interface ActivityFeedProps {
 
 export function ActivityFeed({ activities }: ActivityFeedProps) {
 
+    const [communitydetailsCount, setCommunitydetailsCount] = useState<CommunauteDetailsCount>();
+
     const featuredCommunity = useAppSelector((state: RootState) => state.communities.featuredCommunity);
-    console.log(`Freature community ===> ${featuredCommunity?.categories.length}`);
+    const frontendUrl = import.meta.env.VITE_FRONTENT_URL;
+
+
+    console.log(frontendUrl);
+
+
+   useEffect(() => {
+      const loadCommunauteDetailsCount = async () => {
+        const data = await fetchCommunauteDetailsCount(featuredCommunity?.pkId);
+        setCommunitydetailsCount(data);
+      };
+      loadCommunauteDetailsCount();
+    }, []);
+
+    
+
+    console.log(communitydetailsCount);
+  
 
 
  
@@ -55,31 +78,31 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
           </div>
         ))}
 
-        {/* Section verticale avec icônes  cvolor: rgb(239,132,80) */}
+        {/* Section verticale avec icônes  color: rgb(239,132,80)  all-institutions */}
         <div className="border-t border-gray-300 pt-5">
       <div className="flex flex-col space-y-4">
         {/* Lien pour les Communautés */}
-        <Link to="/communities" className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+        <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/membres`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
           <Globe className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">10 Communautés</span>
+          <span className="text-md text-muted-foreground"> {communitydetailsCount?.membres} Membres</span>
         </Link>
 
         {/* Lien pour les Membres */}
-        <Link to="/members" className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+        <Link to={`${frontendUrl}/all-institutions`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
           <Users className="h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">33 Membres</span>
+          <span className="text-md text-muted-foreground">{communitydetailsCount?.institutions} Partenaires</span>
         </Link>
 
         {/* Lien pour les Partenaires */}
-        <Link to="/partners" className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+        <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/ressources`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
           <Handshake className="h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">9 Partenaires</span>
+          <span className="text-md text-muted-foreground">{communitydetailsCount?.ressources} Ressources</span>
         </Link>
 
         {/* Lien pour les Ressources */}
-        <Link to="/resources" className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+        <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/discussions`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
           <FileText className="h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">25 Ressources</span>
+          <span className="text-md text-muted-foreground">{communitydetailsCount?.discussions} Discussions </span>
         </Link>
       </div>
     </div>

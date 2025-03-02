@@ -1,13 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Users, Handshake, FileText, Globe } from "lucide-react" // Importez les icônes nécessaires
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Users, Group, FileText, MessageCircle } from "lucide-react"; // Updated icon imports
 import { Link } from 'react-router-dom';
 import { useAppSelector } from "../hooks/useAppSelector";
 import { RootState } from "../store/store";
 import { useState, useEffect } from 'react';
-import {  CommunauteDetailsCount } from "../models/CommunityType";
+import { CommunauteDetailsCount } from "../models/CommunityType";
 
 import { fetchCommunauteDetailsCount } from "../services/CommunityServices";
+
 
 
 
@@ -54,7 +55,7 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 
  
   return (
-    <Card className="bg-red-50">
+    <Card >
       <CardHeader>
         <CardTitle>La communauté à la une</CardTitle>
       </CardHeader>
@@ -78,34 +79,35 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
           </div>
         ))}
 
-        {/* Section verticale avec icônes  color: rgb(239,132,80)  all-institutions */}
-        <div className="border-t border-gray-300 pt-5">
-      <div className="flex flex-col space-y-4">
-        {/* Lien pour les Communautés */}
-        <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/membres`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
-          <Globe className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground"> {communitydetailsCount?.membres} Membres</span>
-        </Link>
+          {/* Section verticale avec icônes  color: rgb(239,132,80)  all-institutions */}
+          <div className="border-t border-gray-300 pt-5">
+  <div className="flex flex-col space-y-4">
+    {/* Lien pour les Membres */}
+    <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/membres`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+      <Users className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
+      <span className="text-md text-muted-foreground">{communitydetailsCount?.membres} Membres</span>
+    </Link>
 
-        {/* Lien pour les Membres */}
-        <Link to={`${frontendUrl}/all-institutions`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
-          <Users className="h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">{communitydetailsCount?.institutions} Partenaires</span>
-        </Link>
+    {/* Lien pour les Partenaires */}
+    <Link to={`${frontendUrl}/all-institutions`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+      <Group className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
+      <span className="text-md text-muted-foreground">{communitydetailsCount?.institutions} Partenaires</span>
+    </Link>
 
-        {/* Lien pour les Partenaires */}
-        <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/ressources`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
-          <Handshake className="h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">{communitydetailsCount?.ressources} Ressources</span>
-        </Link>
+    {/* Lien pour les Ressources */}
+    <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/ressources`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+      <FileText className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
+      <span className="text-md text-muted-foreground">{communitydetailsCount?.ressources} Ressources</span>
+    </Link>
 
-        {/* Lien pour les Ressources */}
-        <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/discussions`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
-          <FileText className="h-5 w-5 text-primary hover:text-primary/80 transition-colors" />
-          <span className="text-md text-muted-foreground">{communitydetailsCount?.discussions} Discussions </span>
-        </Link>
-      </div>
-    </div>
+    {/* Lien pour les Discussions */}
+    <Link to={`${frontendUrl}/communaute-details/${featuredCommunity?.pkId}/discussions`} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-lg transition-colors">
+      <MessageCircle className="h-6 w-6 text-primary hover:text-primary/80 transition-colors" />
+      <span className="text-md text-muted-foreground">{communitydetailsCount?.discussions} Discussions</span>
+    </Link>
+  </div>
+</div>
+
       </CardContent>
     </Card>
   )

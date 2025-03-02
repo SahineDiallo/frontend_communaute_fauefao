@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -23,8 +23,7 @@ import {
   Minus,
   Paperclip,
 } from 'lucide-react';
-import UploadProgress from './UploadProgress'; // Assurez-vous d'avoir un composant Progress
-import '../ui/richtext.css'; // Assurez-vous que ce fichier CSS est correctement importé
+import '../ui/richtext.css';
 
 // Custom Image Extension
 const CustomImage = Image.extend({
@@ -46,21 +45,37 @@ const CustomImage = Image.extend({
   },
 });
 
-interface RichTextEditorProps {
-  content: string; // Le contenu de l'éditeur (chaîne HTML)
-  onChange: (content: string) => void; // Callback pour les changements de contenu
-  onTempFileUpload?: (tempFilePath: string) => void; // Callback pour les uploads de fichiers temporaires (optionnel)
-  textOnly?: boolean;
-}
-
-interface Upload {
+export interface Upload {
   id: string; // Identifiant unique pour chaque upload
   file: File; // Fichier en cours d'upload
-  progress: number; // Progression de l'upload
+  progress: number; // Progression de l'upload (0 à 100)
+  fileName: string; // Nom du fichier
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTempFileUpload, textOnly = false }) => {
+interface RichTextEditorProps {
+  content: string; // Le contenu de l'éditeur (HTML string)
+  onChange: (content: string) => void; // Callback pour les changements de contenu
+  onTempFileUpload?: (tempFilePath: string) => void; // Callback pour les uploads de fichiers temporaires
+  textOnly?: boolean; // Mode texte uniquement (optionnel)
+  onUploadsChange?: (uploads: Upload[]) => void; // Nouveau callback pour transmettre les uploads au parent
+}
+
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ 
+  content, 
+  onChange, 
+  onTempFileUpload, 
+  textOnly = false,
+  onUploadsChange
+}) => {
+  const domain = import.meta.env.VITE_MAIN_DOMAIN; // Domaine pour les uploads
   const [uploads, setUploads] = useState<Upload[]>([]); // État pour gérer les uploads en cours
+
+  // Utiliser useEffect pour notifier le parent des changements dans les uploads
+  useEffect(() => {
+    if (onUploadsChange) {
+      onUploadsChange(uploads);
+    }
+  }, [uploads, onUploadsChange]);
 
   const editor = useEditor({
     extensions: [
@@ -70,15 +85,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
         },
       }),
       Underline,
-      CustomImage, // Utilisez l'extension d'image personnalisée
+      CustomImage,
       Link.configure({
-        openOnClick: true, // Permettre aux liens d'être cliquables
+        openOnClick: true,
         HTMLAttributes: {
-          target: '_blank', // Ouvrir les liens dans un nouvel onglet
-          rel: 'noopener noreferrer', // Attributs de sécurité
+          target: '_blank',
+          rel: 'noopener noreferrer',
         },
         validate: (href) => {
-          // S'assurer que l'URL est absolue (commence par http:// ou https://)
           return /^https?:\/\//.test(href);
         },
       }),
@@ -93,7 +107,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
     content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      onChange(html); // Passer le contenu mis à jour au composant parent
+      onChange(html);
     },
     editorProps: {
       attributes: {
@@ -129,88 +143,99 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
     },
   });
 
-  const handleFileUpload = async (file: File, position: number) => {
+  const handleFileUpload = (file: File, position: number) => {
     const uploadId = Date.now().toString(); // Identifiant unique pour l'upload
     const newUpload: Upload = {
       id: uploadId,
       file,
       progress: 0,
+      fileName: file.name
     };
-
+  
     // Ajouter l'upload à la liste des uploads en cours
     setUploads((prevUploads) => [...prevUploads, newUpload]);
-
-    // Simuler un upload avec une progression
-    const simulateUpload = () => {
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 10; // Augmenter aléatoirement la progression
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-
-          // Simuler la fin de l'upload
-          setTimeout(() => {
-            // Créer une URL locale pour le fichier (blob URL)
-            const tempFilePath = URL.createObjectURL(file);
-            const fileName = file.name;
-            const fileId = Date.now().toString(); // ID temporaire
-
-            if (onTempFileUpload) {
-              onTempFileUpload(fileId);
-            }
-
-            // Insérer le contenu dans l'éditeur
-            if (file.type.startsWith('image/')) {
-              editor
-                ?.chain()
-                .insertContentAt(position, {
-                  type: 'image',
-                  attrs: {
-                    id: 'uploadIMG',
-                    class: 'uploadIMG',
-                    src: tempFilePath,
-                  },
-                })
-                .focus()
-                .run();
-            } else {
-              editor
-                ?.chain()
-                .insertContentAt(position, {
-                  type: 'text',
-                  text: fileName,
-                  marks: [
-                    {
-                      type: 'link',
-                      attrs: {
-                        href: tempFilePath,
-                        target: '_blank',
-                        rel: 'noopener noreferrer',
-                      },
-                    },
-                  ],
-                })
-                .focus()
-                .run();
-            }
-
-            // Retirer l'upload de la liste une fois terminé
-            setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
-          }, 500); // Délai avant de terminer le processus
-        }
-
-        // Mettre à jour la progression de l'upload
+  
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    const xhr = new XMLHttpRequest();
+  
+    // Suivre la progression de l'upload
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) {
+        const progress = Math.round((event.loaded / event.total) * 100);
         setUploads((prevUploads) =>
           prevUploads.map((upload) =>
-            upload.id === uploadId ? { ...upload, progress: Math.min(Math.round(progress), 100) } : upload
+            upload.id === uploadId ? { ...upload, progress } : upload
           )
         );
-      }, 200); // Mettre à jour la progression toutes les 200ms
+      }
+    });
+  
+    // Gérer la réponse après l'upload
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const data = JSON.parse(xhr.responseText);
+        const tempFilePath = data.fileUrl; // URL temporaire du fichier
+        const fileName = data.fileName; // Nom du fichier
+        const fileId = data.fichierId; // ID du fichier
+  
+        if (onTempFileUpload) {
+          onTempFileUpload(fileId);
+        }
+  
+        if (file.type.startsWith('image/')) {
+          // Insérer une image dans l'éditeur
+          editor
+            ?.chain()
+            .insertContentAt(position, {
+              type: 'image',
+              attrs: {
+                id: 'uploadIMG',
+                class: 'uploadIMG',
+                src: tempFilePath,
+              },
+            })
+            .focus()
+            .run();
+        } else {
+          // Insérer un lien vers le fichier dans l'éditeur
+          editor
+            ?.chain()
+            .insertContentAt(position, {
+              type: 'text',
+              text: fileName,
+              marks: [
+                {
+                  type: 'link',
+                  attrs: {
+                    href: tempFilePath,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  },
+                },
+              ],
+            })
+            .focus()
+            .run();
+        }
+      } else {
+        console.error('Failed to upload file:', xhr.statusText);
+      }
+  
+      // Retirer l'upload de la liste une fois terminé
+      setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
     };
-
-    // Démarrer la simulation
-    simulateUpload();
+  
+    // Gérer les erreurs
+    xhr.onerror = () => {
+      console.error('Error uploading file:', xhr.statusText);
+      setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
+    };
+  
+    // Envoyer la requête
+    xhr.open('POST', `${domain}/api/upload-file/`, true);
+    xhr.send(formData);
   };
 
   const handleImageUploadClick = () => {
@@ -293,18 +318,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
 
   return (
     <div className="rich-text-editor">
-      {/* Barres de progression en haut du composant */}
-      <div className="bg-white p-4 shadow-md">
-        {uploads.map((upload) => (
-          <div key={upload.id} className="mb-2">
-            <UploadProgress value={upload.progress} className="h-2" />
-            <p className="text-sm text-muted-foreground mt-1">
-              {upload.progress}% completed - {upload.file.name}
-            </p>
-          </div>
-        ))}
-      </div>
-
       {/* Toolbar */}
       <div className="toolbar">
         {/* Boutons de formatage de texte */}
@@ -391,9 +404,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange, onTe
           <>
             <button type="button" onClick={handleImageUploadClick} disabled={uploads.length > 0}>
               <ImageIcon size={20} />
-            </button>
-            <button type="button" onClick={handleFileUploadClick} disabled={uploads.length > 0}>
-              <Paperclip size={20} />
             </button>
             <button type="button" onClick={addYoutubeVideo}>
               <YoutubeIcon size={20} />

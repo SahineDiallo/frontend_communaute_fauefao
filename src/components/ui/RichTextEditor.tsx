@@ -319,7 +319,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className="rich-text-editor">
       {/* Toolbar */}
-      <div className="toolbar">
+      <div className="toolbar sticky top-0 bg-white shadow-md p-2 z-50 flex gap-2">
+
         {/* Boutons de formatage de texte */}
         <button
           type="button"
@@ -432,9 +433,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       </div>
 
       {/* Contenu de l'éditeur */}
-      <div className="editor-content prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc">
-        <EditorContent editor={editor} />
-      </div>
+      <div className="editor-content prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc max-h-[400px] overflow-auto border p-2">
+  <EditorContent editor={editor} />
+</div>
+
     </div>
   );
 };

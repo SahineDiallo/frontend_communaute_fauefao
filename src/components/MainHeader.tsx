@@ -61,7 +61,7 @@ const MainHeader: React.FC = () => {
           </button>
           <div className="flex-center gap-4">
             <MobileMenu MobileMenus={Menu} isOpen={isMobileMenuOpen} closeMenu={closeMobileMenu} />
-            <Link to="www.fauefao.org">
+            <Link to="https://www.fauefao.org">
               <img src={Logo} alt="Logo Fauefao" className='h-8 object-contain' /> {/* Reduced logo size */}
             </Link>
           </div>

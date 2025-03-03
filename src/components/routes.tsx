@@ -14,7 +14,7 @@ import CommunityTabContent from './CommunityTabContent';
 import MemberSearch from './pages/AllMembers';
 import StakeholderSearch from './pages/Institutions';
 import AdminDashboard from './pages/Dashboard';
-import AddCommunityForm from './pages/AddCommunity';
+
 
 const AppRoutes: React.FC  = () => {
   return (
@@ -29,7 +29,7 @@ const AppRoutes: React.FC  = () => {
       {/* All dashboard routerss */}
       <Route path="/dashbord" element={<AdminDashboard />} />
       
-      <Route path="/add-community" element={<AddCommunityForm />} />
+      {/* <Route path="/add-community" element={<AddCommunityForm/>} /> */}
 
       
       <Route element={<Layout />}>

@@ -61,7 +61,7 @@ const MainHeader: React.FC = () => {
           </button>
           <div className="flex-center gap-4">
             <MobileMenu MobileMenus={Menu} isOpen={isMobileMenuOpen} closeMenu={closeMobileMenu} />
-            <Link to="/">
+            <Link to="www.fauefao.org">
               <img src={Logo} alt="Logo Fauefao" className='h-8 object-contain' /> {/* Reduced logo size */}
             </Link>
           </div>
@@ -72,8 +72,7 @@ const MainHeader: React.FC = () => {
             <li key={item.name}>
               <Link
                 to={item.path}
-                className="flex items-center gap-2 hover:text-[#ef8450] transition-colors duration-300"
-              >
+                className="flex items-center gap-2 hover:text-[#ef8450] transition-colors duration-300">
                 <item.icon size={20} />
                 <span>{item.name}</span>
               </Link>

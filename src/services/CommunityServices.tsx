@@ -1,5 +1,5 @@
 
-import { Communaute } from "../models/CommunityType";
+import { Communaute, CommunauteDetailsCount } from "../models/CommunityType";
 import { Category } from "../types";
 import API_BASE_URL  from '../constantes/api';
 
@@ -35,6 +35,23 @@ export const fetchCommunities = async (): Promise<Communaute[]> => {
   } catch (error) {
     console.error('Error fetching communities:', error);
     return [];
+  }
+};
+
+
+/**
+ * Récupère les details count d'une communauté depuis l'API.
+ */
+export const fetchCommunauteDetailsCount = async (pkId:any): Promise<CommunauteDetailsCount> => {
+  try {
+  const response = await fetch(`${API_BASE_URL}/api/communautesDetails/count/${pkId}/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch community details');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching community details:', error);
+    return {} as CommunauteDetailsCount;
   }
 };
 

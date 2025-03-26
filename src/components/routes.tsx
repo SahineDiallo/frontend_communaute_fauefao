@@ -28,10 +28,8 @@ const AppRoutes: React.FC  = () => {
 
       {/* All dashboard routerss */}
       <Route path="/dashbord" element={<AdminDashboard />} />
-      
       {/* <Route path="/add-community" element={<AddCommunityForm/>} /> */}
 
-      
       <Route element={<Layout />}>
         <Route path="/" element={<CommunitiesPage />} />
         <Route path="/all-members" element={<MemberSearch />} />

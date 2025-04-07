@@ -52,8 +52,10 @@ export interface Discussion {
   auteur: {
     first_name: string;
     last_name: string;
+    pkId?: string
   }
   commentCount: 0;
+  communaute: Community;
 }
 export type StakeholderType = "Government" | "Other" | "Research centers and academia" | "Non-governmental organization"
 export interface Stakeholder {

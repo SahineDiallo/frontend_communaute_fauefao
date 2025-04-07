@@ -14,6 +14,7 @@ import CommunityTabContent from './CommunityTabContent';
 import MemberSearch from './pages/AllMembers';
 import StakeholderSearch from './pages/Institutions';
 import AdminDashboard from './pages/Dashboard';
+import ProfilePage from './pages/UserProfilPage';
 
 
 const AppRoutes: React.FC  = () => {
@@ -39,11 +40,11 @@ const AppRoutes: React.FC  = () => {
         <Route path="/communities/:pkId/:tab" element={<CommunityTabContent />} />
         {/* Post Details Page */}
         <Route path="/communities/:pkId/posts/:postId" element={<PostDetails />} />
+        <Route path='/accounts/profile/:pkId' element={<ProfilePage />} />
       </Route>
       {/* Protected Routes (With Layout) */}
       <Route element={<ProtectedRoute />}>
-        <Route element={<Layout />}>
-        </Route>
+        <Route element={<Layout />}></Route>
       </Route>
     </Routes>
   );

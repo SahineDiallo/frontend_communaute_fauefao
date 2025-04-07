@@ -1,7 +1,7 @@
-
-// communitiesSlice.ts
-import { createSlice, createAsyncThunk,  PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Community } from '../../../types';
+import { fetchCommunauteDetailsCount } from '../../../services/CommunityServices';
+
 
 interface FilterParams {
   query: string;
@@ -9,24 +9,37 @@ interface FilterParams {
   category: string;
 }
 
+interface CommunauteDetailsCount {
+  membres: number;
+  institutions: number;
+  ressources: number;
+  discussions: number;
+}
+
 interface CommunitiesState {
   data: Community[];
-  filteredData: Community[]; // Store filtered communities
+  filteredData: Community[];
   featuredCommunity: Community | null;
+  featuredCommunityDetails: CommunauteDetailsCount | null; // New field
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   filteredStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  detailsStatus: 'idle' | 'loading' | 'succeeded' | 'failed'; // New status
   error: string | null;
   filteredError: string | null;
+  detailsError: string | null; // New error field
 }
 
 const initialState: CommunitiesState = {
   data: [],
   filteredData: [],
   featuredCommunity: null,
+  featuredCommunityDetails: null,
   status: 'idle',
   filteredStatus: 'idle',
+  detailsStatus: 'idle',
   error: null,
   filteredError: null,
+  detailsError: null,
 };
 
 // Thunk for fetching all communities
@@ -38,20 +51,14 @@ export const fetchCommunities = createAsyncThunk<Community[]>(
     if (!response.ok) {
       throw new Error('Failed to fetch communities');
     }
-    const data: Community[] = await response.json();
-    return data;
+    return await response.json();
   }
 );
 
-// New thunk for fetching filtered communities
+// Thunk for fetching filtered communities
 export const fetchFilteredCommunities = createAsyncThunk<Community[], FilterParams>(
   'communities/fetchFilteredCommunities',
   async (filters) => {
-    // If filters is not provided, default to safe values
-    if (!filters) {
-      filters = { query: '', type: 'all', category: 'all' };
-    }
-    
     const domain = import.meta.env.VITE_MAIN_DOMAIN;
     const queryParams = new URLSearchParams();
     
@@ -63,17 +70,17 @@ export const fetchFilteredCommunities = createAsyncThunk<Community[], FilterPara
     if (!response.ok) {
       throw new Error('Failed to fetch filtered communities');
     }
-    const data: Community[] = await response.json();
-    return data;
+    return await response.json();
   }
 );
 
-// Optionally, an action to reset filtered data
-const resetFilteredData = (state: CommunitiesState) => {
-  state.filteredData = [];
-  state.filteredStatus = 'idle';
-  state.filteredError = null;
-};
+// Thunk for fetching community details count
+export const fetchFeaturedCommunityDetails = createAsyncThunk<CommunauteDetailsCount, string>(
+  'communities/fetchFeaturedCommunityDetails',
+  async (communityId) => {
+    return await fetchCommunauteDetailsCount(communityId);
+  }
+);
 
 const communitiesSlice = createSlice({
   name: 'communities',
@@ -81,23 +88,27 @@ const communitiesSlice = createSlice({
   reducers: {
     setFeaturedCommunity: (state, action: PayloadAction<Community>) => {
       state.featuredCommunity = action.payload;
+      state.featuredCommunityDetails = null; // Reset details when community changes
+      state.detailsStatus = 'idle'; // Reset loading state
     },
     resetCommunityState: (state) => {
       state.status = 'idle';
-      // Do not clear data to avoid flickering
     },
-    resetFilteredCommunities: resetFilteredData,
+    resetFilteredCommunities: (state) => {
+      state.filteredData = [];
+      state.filteredStatus = 'idle';
+      state.filteredError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
-      // For fetchCommunities (unfiltered)
+      // Fetch all communities
       .addCase(fetchCommunities.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(fetchCommunities.fulfilled, (state, action: PayloadAction<Community[]>) => {
+      .addCase(fetchCommunities.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
-        // Randomly select a featured community
         if (action.payload.length > 0) {
           const randomIndex = Math.floor(Math.random() * action.payload.length);
           state.featuredCommunity = action.payload[randomIndex];
@@ -108,20 +119,38 @@ const communitiesSlice = createSlice({
         state.error = action.error.message || 'Failed to fetch communities';
       })
 
-      // For fetchFilteredCommunities
+      // Fetch filtered communities
       .addCase(fetchFilteredCommunities.pending, (state) => {
         state.filteredStatus = 'loading';
       })
-      .addCase(fetchFilteredCommunities.fulfilled, (state, action: PayloadAction<Community[]>) => {
+      .addCase(fetchFilteredCommunities.fulfilled, (state, action) => {
         state.filteredStatus = 'succeeded';
         state.filteredData = action.payload;
       })
       .addCase(fetchFilteredCommunities.rejected, (state, action) => {
         state.filteredStatus = 'failed';
         state.filteredError = action.error.message || 'Failed to fetch filtered communities';
+      })
+
+      // Fetch featured community details
+      .addCase(fetchFeaturedCommunityDetails.pending, (state) => {
+        state.detailsStatus = 'loading';
+      })
+      .addCase(fetchFeaturedCommunityDetails.fulfilled, (state, action) => {
+        state.detailsStatus = 'succeeded';
+        state.featuredCommunityDetails = action.payload;
+      })
+      .addCase(fetchFeaturedCommunityDetails.rejected, (state, action) => {
+        state.detailsStatus = 'failed';
+        state.detailsError = action.error.message || 'Failed to fetch community details';
       });
   },
 });
 
-export const { setFeaturedCommunity, resetCommunityState, resetFilteredCommunities } = communitiesSlice.actions;
+export const { 
+  setFeaturedCommunity, 
+  resetCommunityState, 
+  resetFilteredCommunities 
+} = communitiesSlice.actions;
+
 export default communitiesSlice.reducer;

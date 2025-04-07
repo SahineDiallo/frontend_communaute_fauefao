@@ -24,6 +24,7 @@ import {
   Paperclip,
 } from 'lucide-react';
 import '../ui/richtext.css';
+import { toast } from 'react-toastify';
 
 // Custom Image Extension
 const CustomImage = Image.extend({
@@ -60,6 +61,7 @@ interface RichTextEditorProps {
   onUploadsChange?: (uploads: Upload[]) => void; // Nouveau callback pour transmettre les uploads au parent
 }
 
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ 
   content, 
   onChange, 
@@ -121,6 +123,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           if (item.type.indexOf('image') === 0) {
             const file = item.getAsFile();
             if (file) {
+              if (file.size > MAX_FILE_SIZE) {
+                toast.error(`La taille du fichier dépasse la limite autorisée de 25 Mo. Votre fichier fait ${(file.size / (1024 * 1024)).toFixed(2)} Mo`
+);
+                return true;
+              }
               handleFileUpload(file, view.state.selection.anchor);
               return true;
             }
@@ -134,6 +141,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         if (files && files.length > 0) {
           const file = files[0];
           if (file.type.indexOf('image') === 0) {
+            if (file.size > MAX_FILE_SIZE) {
+              toast.error(`La taille du fichier dépasse la limite autorisée de 25 Mo. Votre fichier fait ${(file.size / (1024 * 1024)).toFixed(2)} Mo`);
+              return true;
+            }
             handleFileUpload(file, view.state.selection.anchor);
             return true;
           }
@@ -144,7 +155,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   });
 
   const handleFileUpload = (file: File, position: number) => {
-    const uploadId = Date.now().toString(); // Identifiant unique pour l'upload
+    // Check file size before proceeding
+    if (file.size > MAX_FILE_SIZE) {
+      // Show toast error (assuming you have a toast function available)
+      toast.error(`La taille du fichier dépasse la limite autorisée de 25 Mo. Votre fichier fait ${(file.size / (1024 * 1024)).toFixed(2)} Mo`);
+      return;
+    }
+
+    const uploadId = Date.now().toString();
     const newUpload: Upload = {
       id: uploadId,
       file,
@@ -152,7 +170,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       fileName: file.name
     };
   
-    // Ajouter l'upload à la liste des uploads en cours
     setUploads((prevUploads) => [...prevUploads, newUpload]);
   
     const formData = new FormData();
@@ -160,7 +177,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   
     const xhr = new XMLHttpRequest();
   
-    // Suivre la progression de l'upload
     xhr.upload.addEventListener('progress', (event) => {
       if (event.lengthComputable) {
         const progress = Math.round((event.loaded / event.total) * 100);
@@ -172,20 +188,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
     });
   
-    // Gérer la réponse après l'upload
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         const data = JSON.parse(xhr.responseText);
-        const tempFilePath = data.fileUrl; // URL temporaire du fichier
-        const fileName = data.fileName; // Nom du fichier
-        const fileId = data.fichierId; // ID du fichier
+        const tempFilePath = data.fileUrl;
+        const fileName = data.fileName;
+        const fileId = data.fichierId;
   
         if (onTempFileUpload) {
           onTempFileUpload(fileId);
         }
   
         if (file.type.startsWith('image/')) {
-          // Insérer une image dans l'éditeur
           editor
             ?.chain()
             .insertContentAt(position, {
@@ -199,7 +213,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             .focus()
             .run();
         } else {
-          // Insérer un lien vers le fichier dans l'éditeur
           editor
             ?.chain()
             .insertContentAt(position, {
@@ -221,19 +234,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         }
       } else {
         console.error('Failed to upload file:', xhr.statusText);
+        toast.error('Failed to upload file');
       }
   
-      // Retirer l'upload de la liste une fois terminé
       setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
     };
   
-    // Gérer les erreurs
     xhr.onerror = () => {
       console.error('Error uploading file:', xhr.statusText);
+      toast.error('Error uploading file');
       setUploads((prevUploads) => prevUploads.filter((upload) => upload.id !== uploadId));
     };
   
-    // Envoyer la requête
     xhr.open('POST', `${domain}/api/upload-file/`, true);
     xhr.send(formData);
   };
@@ -245,6 +257,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     input.onchange = (event: Event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
+        if (file.size > MAX_FILE_SIZE) {
+          toast.error(`File size exceeds the limit of 25MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
+          return;
+        }
         handleFileUpload(file, editor?.state.selection.anchor || 0);
       }
     };
@@ -258,6 +274,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     input.onchange = (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
+        if (file.size > MAX_FILE_SIZE) {
+          toast.error(`File size exceeds the limit of 25MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
+          return;
+        }
         handleFileUpload(file, editor?.state.selection.anchor || 0);
       }
     };

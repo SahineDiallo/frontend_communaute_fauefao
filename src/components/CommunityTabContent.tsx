@@ -131,7 +131,7 @@ const CommunityTabContent = () => {
   }, [pkId, tab, community?.description]);
 
   useEffect(() => {
-    fetch(`${domain}api/recent-activities/?community_id=${community?.pkId}`)
+    fetch(`${domain}/api/recent-activities/?community_id=${community?.pkId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("this is the activities for community details", data)
@@ -150,7 +150,8 @@ const CommunityTabContent = () => {
           <div className="md:col-span-4 bg-white p-4 shadow">
             <div className="mb-3">
               <h2 className="text-lg custom-header">Activités Récentes</h2>
-              {recentActivities.map((activity: ActivityItemProps, i) => (
+
+              { recentActivities.length !== 0 ?  (recentActivities.map((activity: ActivityItemProps, i) => (
                 <ActivityItem
                   key={i}
                   user={activity.user}
@@ -159,7 +160,9 @@ const CommunityTabContent = () => {
                   fichier={activity?.fichier}
                   community={activity.community}
                 />
-              ))}
+              ))): (
+                <p className='text-muted'>Pas d'activités recentes</p>
+              )}
             </div>
             <div className="mb-3">
               <h2 className="text-lg custom-header">Administrateurs</h2>

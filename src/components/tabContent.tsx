@@ -57,6 +57,7 @@ const TabContent = ({
                     ? `${discussion.auteur.first_name} ${discussion.auteur.last_name}` // Combine first and last name
                     : discussion.auteur?.first_name || discussion.auteur?.last_name || 'Anonymous' // Fallback to first name, last name, or 'Anonymous'
                 }
+                authorPkId={discussion.auteur?.pkId}
                 date={discussion.date_creation}
                 headlineDescription={discussion.headlineDescription}
                 // excerpt={discussion.contenu} // Use the full content or truncate it for an excerpt

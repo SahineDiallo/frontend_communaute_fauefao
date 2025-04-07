@@ -15,15 +15,15 @@ function App() {
         <Router>
           <AppRoutes />
           <ToastContainer
-              position="top-right" // Position at the top-right
-              autoClose={5000} // Auto-close notifications after 5 seconds
-              hideProgressBar={false} // Show progress bar
-              newestOnTop={false} // New notifications appear below older ones
-              closeOnClick // Close notifications when clicked
-              rtl={false} // Left-to-right layout
-              pauseOnFocusLoss // Pause notifications when the window loses focus
-              draggable // Allow dragging to dismiss
-              pauseOnHover // Pause notifications when hovered
+              position="top-right" 
+              autoClose={5000} 
+              hideProgressBar={false}
+              newestOnTop={false} 
+              closeOnClick 
+              rtl={false} 
+              pauseOnFocusLoss 
+              draggable 
+              pauseOnHover 
             />
         </Router>
       </PersistGate>

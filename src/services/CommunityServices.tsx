@@ -1,14 +1,8 @@
 
-import { Communaute, CommunauteDetailsCount } from "../models/CommunityType";
+import { Communaute } from "../models/CommunityType";
 import { Category } from "../types";
 import API_BASE_URL  from '../constantes/api';
 
-// const API_URL = 'http://localhost:8000/api/communautes/'; // URL de votre backend
-
-
-/**
- * Récupère la liste des communautés depuis l'API.
- */
 export const fetchCategories = async (): Promise<Category[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/categories/`);
@@ -38,23 +32,53 @@ export const fetchCommunities = async (): Promise<Communaute[]> => {
   }
 };
 
+interface CommunauteDetailsCount {
+  ressources: number;
+  institutions: number;
+  discussions: number;
+  membres: number;
+}
 
-/**
- * Récupère les details count d'une communauté depuis l'API.
- */
-export const fetchCommunauteDetailsCount = async (pkId:any): Promise<CommunauteDetailsCount> => {
+export const fetchCommunauteDetailsCount = async (
+  pkId: string | undefined
+): Promise<CommunauteDetailsCount> => {
+  if (!pkId) {
+    console.warn('No community ID provided');
+    return {
+      ressources: 0,
+      institutions: 0,
+      discussions: 0,
+      membres: 0
+    };
+  }
+
   try {
-  const response = await fetch(`${API_BASE_URL}/api/communautesDetails/count/${pkId}/`);
+    const response = await fetch(
+      `${API_BASE_URL}/api/communautesDetails/count/${pkId}/`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          // Add auth headers if needed
+        },
+      }
+    );
+
     if (!response.ok) {
-      throw new Error('Failed to fetch community details');
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
     return await response.json();
   } catch (error) {
     console.error('Error fetching community details:', error);
-    return {} as CommunauteDetailsCount;
+    // Return fallback data with proper typing
+    return {
+      ressources: 0,
+      institutions: 0,
+      discussions: 0,
+      membres: 0
+    };
   }
 };
-
 /**
  * Ajoute une nouvelle communauté à l'API.
  * @param newCommunity - Les données de la nouvelle communauté à ajouter.
@@ -63,7 +87,7 @@ export const addCommunity = async (formData: FormData): Promise<Communaute> => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/addComminities  `, {
       method: 'POST',
-      body: formData, // Pas besoin de headers pour FormData
+      body: formData,
     });
 
     if (!response.ok) {

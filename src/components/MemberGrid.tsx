@@ -44,10 +44,10 @@ export function MemberGrid({ members }: MemberGridProps) {
               </Avatar>
             <div>
               <h3 className="text-[#ef8450] underline-none font-medium hover:underline mb-1">
-                <Link to="#">{member.user.full_name}</Link>
+                <Link to={`/accounts/profile/${member.user.pkId}`}>{member.user.full_name}</Link>
               </h3>
               <p className="text-sm text-gray-500">Membre depuis: {formatIsoDate(member.date_joined)}</p>
-              <p className="text-sm text-gray-600">Bangladesh</p>
+              <p className="text-sm text-gray-600">{member.user.country}</p>
             </div>
           </div>
       ))}

@@ -6,6 +6,7 @@ import { Button } from './ui/Button';
 interface DiscussionPostProps {
   title: string;
   author?: string;
+  authorPkId?: string;
   date: string;
   excerpt?: string;
   headlineDescription: string;
@@ -77,6 +78,7 @@ interface DiscussionPostProps {
   
   export function DiscussionPost( {title,
     author,
+    authorPkId,
     date,
     excerpt,
     commentCount = 0,
@@ -86,7 +88,6 @@ interface DiscussionPostProps {
   }: DiscussionPostProps) {
     const contentToRender = excerpt ? excerpt : headlineDescription;
     const navigate = useNavigate();
-    console.log("headline", headlineDescription)
     // Function to handle the "Lire plus" button click
     const handleReadMoreClick = () => {     // Navigate to the post details page
       navigate(`/communities/${communityPkId}/posts/${pkId}`);
@@ -126,7 +127,11 @@ interface DiscussionPostProps {
           {/* Author and date */}
           <div className="text-gray-600 mb-4" style={{ fontWeight: 100, fontStyle: "Italic" }}>
             {'Publié par '}
-            <span className="text-[#e86928] italic">{author || 'Anonymous'}</span>
+            <Link
+              to={`/accounts/profile/${authorPkId}`} // Link to author's profile
+            >
+              <span className="text-[#e86928] italic">{author || 'Anonymous'}</span>
+            </Link>
             {' le '}
             {formatDateToFrench(date)}
           </div>

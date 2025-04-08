@@ -42,7 +42,6 @@ const fetchPostDetails = async (
     });
 
     if (!response.ok) {
-      console.log("Response not OK:", response.status, response.statusText);
       throw new Error("Failed to fetch post details");
     }
 
@@ -75,7 +74,6 @@ const PostDetails = () => {
     fetch(`${domain}/api/recent-activities/?community_id=${community?.pkId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("here is the data recent activities", data);
         setRecentActivities(data)});
   }, [community?.pkId, domain, token]);
   useEffect(() => {
@@ -91,8 +89,7 @@ const PostDetails = () => {
           try {
             const data = await fetchPostDetails(postId, pkId, navigate);
             if (data) {
-              
-              console.log("here is the data returned for discussion", data);
+          
               if (data.discussion) setPost(data.discussion);
               if (data.fichiers) {
                 setDiscussionFichiers(data.fichiers)

@@ -138,7 +138,6 @@ const useAuth = () => {
       }
   
       const data = await response.json();
-      console.log("here is the data", data);
       const newToken = data.access;
   
       // Update the token in localStorage and Redux

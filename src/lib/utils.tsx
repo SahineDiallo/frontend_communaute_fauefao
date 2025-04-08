@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(dateString: string): string {
-  console.log("the formate date is running");
   try {
     // Handle dates in DD/MM/YYYY format
     if (dateString.includes('/')) {

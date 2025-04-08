@@ -134,7 +134,6 @@ const CommunityTabContent = () => {
     fetch(`${domain}/api/recent-activities/?community_id=${community?.pkId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("this is the activities for community details", data)
         setRecentActivities(data)});
   }, [community?.pkId, domain]);
 

@@ -12,8 +12,6 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission to Django backend
-    console.log('Form submitted:', { email })
   }
 
   return (

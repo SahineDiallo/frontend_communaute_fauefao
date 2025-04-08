@@ -11,8 +11,6 @@ const ActivationPage: React.FC = () => {
   const hasActivated = useRef(false);
   useEffect(() => {
     const activateUser = async () => {
-      console.log("the activate user function has been called")
-      console.log("the uuid and token are here", uid, token);
       if (uid && token && !hasActivated.current) {
         hasActivated.current = true;
         try {

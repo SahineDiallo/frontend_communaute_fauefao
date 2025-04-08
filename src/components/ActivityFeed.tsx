@@ -27,7 +27,6 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
   const featuredCommunity = useAppSelector((state: RootState) => state.communities.featuredCommunity);
   const featuredCommunityDetails = useAppSelector((state: RootState) => state.communities.featuredCommunityDetails);
   const frontendUrl = import.meta.env.VITE_FRONTENT_URL;
-  console.log("here are the community details", featuredCommunityDetails)
   // Fetch details when featured community changes
   useEffect(() => {
     if (featuredCommunity?.pkId) {

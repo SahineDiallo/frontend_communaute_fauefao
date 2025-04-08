@@ -56,14 +56,12 @@ export default function ProfilePage() {
         const profileResponse = await fetch(`${BASE_URL}/comptes/profile/${pkId}/`)
         if (!profileResponse.ok) throw new Error("Failed to fetch profile")
         const profileData = await profileResponse.json();
-        console.log("here is the data", profileData)
         setUserProfile(profileData)
 
         // Fetch user discussions
         const discussionsResponse = await fetch(`${BASE_URL}/comptes/profile/${pkId}/discussions/`)
         if (!discussionsResponse.ok) throw new Error("Failed to fetch discussions")
         const discussionsData = await discussionsResponse.json()
-        console.log("here is the discussions data", discussionsData)
         setPublications(discussionsData || [])
         
       } catch (error) {

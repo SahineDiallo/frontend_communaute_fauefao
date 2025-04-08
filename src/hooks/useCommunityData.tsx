@@ -41,7 +41,6 @@ export const useCommunityData = <T, P extends Record<string, string | number>>({
   );
 
   useEffect(() => {
-    console.log("the use effect is running");
     if (!skip && !data) {
       fetchData(params);
     }

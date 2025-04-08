@@ -23,8 +23,6 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission to Django backend
-    console.log('Form submitted:', formData)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
